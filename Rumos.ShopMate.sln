@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rumos.ShopMate.ConsoleApp", "Rumos.ShopMate.ConsoleApp\Rumos.ShopMate.ConsoleApp.csproj", "{D741BD2A-13B4-4D11-A941-33FB28E793C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rumos.ShopMate.Domain", "Rumos.ShopMate.Domain\Rumos.ShopMate.Domain.csproj", "{1D17E189-0E03-4041-A8E4-DD072670CA3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rumos.ShopMate.Data", "Rumos.ShopMate.Data\Rumos.ShopMate.Data.csproj", "{00FCFB25-44AC-4ACC-8AEC-32BF4B00275F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D741BD2A-13B4-4D11-A941-33FB28E793C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D741BD2A-13B4-4D11-A941-33FB28E793C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D741BD2A-13B4-4D11-A941-33FB28E793C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D741BD2A-13B4-4D11-A941-33FB28E793C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D17E189-0E03-4041-A8E4-DD072670CA3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D17E189-0E03-4041-A8E4-DD072670CA3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D17E189-0E03-4041-A8E4-DD072670CA3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D17E189-0E03-4041-A8E4-DD072670CA3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00FCFB25-44AC-4ACC-8AEC-32BF4B00275F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00FCFB25-44AC-4ACC-8AEC-32BF4B00275F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00FCFB25-44AC-4ACC-8AEC-32BF4B00275F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00FCFB25-44AC-4ACC-8AEC-32BF4B00275F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
