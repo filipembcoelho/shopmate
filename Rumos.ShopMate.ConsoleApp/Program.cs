@@ -4,3 +4,5 @@ ShopMateConsoleApplication application = new ShopMateConsoleApplication();
 application.Run();
 
 // comment
+
+// another comment
