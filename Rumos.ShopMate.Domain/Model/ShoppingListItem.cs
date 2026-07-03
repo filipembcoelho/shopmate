@@ -1,52 +1,103 @@
+using Rumos.ShopMate.Domain.Exceptions;
 using Rumos.ShopMate.Domain.Model.Enums;
 
 namespace Rumos.ShopMate.Domain.Model;
 
 public class ShoppingListItem
 {
-    public string Name { get; private set; }
+    public string Name { get; set; }
     public bool IsCompleted { get; set; }
     public int Quantity { get; set; }
     public Unit Unit { get; set; }
     public Category Category { get; set; }
 
-    public ShoppingListItem(string name, int quantity, Unit unit)
+    internal ShoppingListItem(string name, int quantity, Unit unit)
     {
         ValidateName(name);
-        Name = name;
+        ValidateQuantity(quantity);
+        ValidateUnit(unit);
 
+        Name = name.Trim();
+        Quantity = quantity;
+        Unit = unit;
+        IsCompleted = false;
+    }
+
+    internal ShoppingListItem(string name, int quantity, Unit unit, Category category) : this(name, quantity, unit)
+    {
+        ValidateCategory(category);
+        Category = category;
+    }
+
+    internal void ChangeName(string name)
+    {
+        ValidateName(name);
+        Name = name.Trim();
+    }
+
+    internal void ChangeQuantity(int quantity, Unit unit)
+    {
+        ValidateQuantity(quantity);
+        ValidateUnit(unit);
         Quantity = quantity;
         Unit = unit;
     }
 
-    public ShoppingListItem(string name, int quantity, Unit unit, Category category) : this(name, quantity, unit)
+    internal void ChangeCategory(Category category)
     {
+        ValidateCategory(category);
         Category = category;
     }
 
-    // Acções
-    public void ChangeName(string name)
+    internal void MarkAsCompleted()
     {
-        ValidateName(name);
-        Name = name;
+        IsCompleted = true;
     }
 
-    // new method
+    internal void MarkAsPending()
+    {
+        IsCompleted = false;
+    }
+
     private void ValidateName(string name)
     {
-        if (name == null)
+        if (string.IsNullOrWhiteSpace(name))
         {
-            throw new ArgumentNullException(nameof(name));
+            throw new InvalidShoppingListItemException("Item name is required.");
         }
 
-        if (name.Length <= 1)
+        if (name.Trim().Length <= 1)
         {
-            throw new ArgumentException("Name must be at least 2 characters long.");
+            throw new InvalidShoppingListItemException("Item name must be at least 2 characters long.");
         }
 
-        if (name.Length > 50)
+        if (name.Trim().Length > 50)
         {
-            throw new ArgumentException("Name must be at most 50 characters long.");
+            throw new InvalidShoppingListItemException("Item name must be at most 50 characters long.");
+        }
+    }
+
+    private void ValidateQuantity(int quantity)
+    {
+        if (quantity <= 0)
+        {
+            throw new InvalidShoppingListItemException("Quantity must be greater than zero.");
+        }
+    }
+
+    private void ValidateUnit(Unit unit)
+    {
+        if (!Enum.IsDefined(typeof(Unit), unit))
+        {
+            throw new InvalidShoppingListItemException("Invalid unit.");
+        }
+    }
+
+    private void ValidateCategory(Category category)
+    {
+        if (category == null)
+        {
+            throw new InvalidShoppingListItemException("Category is required.");
         }
     }
 }

@@ -1,3 +1,5 @@
+using Rumos.ShopMate.Domain.Exceptions;
+
 namespace Rumos.ShopMate.Domain.Model;
 
 public class User
@@ -13,7 +15,22 @@ public class User
 
     public User(Name name, Account account)
     {
+        if (name == null)
+        {
+            throw new InvalidUserException("Name is required.");
+        }
+
+        if (account == null)
+        {
+            throw new InvalidUserException("Account is required.");
+        }
+
         Name = name;
         Account = account;
+    }
+
+    public override string ToString()
+    {
+        return Name.ToString() + " (" + Account.Username + ")";
     }
 }
