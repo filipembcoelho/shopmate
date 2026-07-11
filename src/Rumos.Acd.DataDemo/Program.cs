@@ -1,19 +1,4 @@
-
-var ds = new User
-{
-    FirstName = "Daniel",
-    LastName = "Paiva",
-    IdCard = "123456789",
-    TaxNumber = "123",
-    Account = new Account
-    {
-        Username = "dpaive",
-        Password = "xxx"
-    }
-};
-
-// Save Changes();
-
+Console.WriteLine($"Hello world");
 
 class User
 {
@@ -21,15 +6,24 @@ class User
     public string LastName { get; set; }
     public string IdCard { get; set; }
     public string TaxNumber { get; set; }
-    public string PhoneNumber1 { get; set; }
-    public string PhoneNumber2 { get; set; }
-    public string PhoneNumber3 { get; set; }
-    public string MobileNumber1 { get; set; }
-    public string Email { get; set; }
-    public Account Account { get; set; } // 1-1
-    public List<Address> Addresses { get; set; } // n-n
+    public Account Account { get; set; } // Composition =>  1-1
     public List<Contact> Contacts { get; set; } // 1-n
+    public List<Address> Addresses { get; set; } // n-n
+
+    public User(string firstName, string lastName)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+    }
 }
+
+class Account // 1 - 1
+{
+    public string Username { get; set; }
+    public string Password { get; set; }
+    public User User { get; set; }
+}
+
 
 class Contact
 {
@@ -44,12 +38,6 @@ enum ContactType
     Email,
 }
 
-class Account // 1 - 1
-{
-    public string Username { get; set; }
-    public string Password { get; set; }
-    public User User { get; set; }
-}
 
 class Address // n-n
 {
