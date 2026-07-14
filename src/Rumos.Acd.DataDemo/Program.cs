@@ -1,7 +1,39 @@
+using Microsoft.EntityFrameworkCore;
+
 Console.WriteLine($"Hello world");
 
 // Entity Framework Core
 
+ApplicationContext db = new ApplicationContext();
+// INSERTS, Udpate, Delete
+
+// Model first
+
+// Migrations // Add-Migration "Initial state"
+// Update DB schema // Update-Database
+
+foreach (var firstName in db.Users)
+{
+    Console.WriteLine(firstName);
+}
+
+db.Users.Add(new User("John", "Doe"));
+db.SaveChanges();
+
+class ApplicationContext : DbContext
+{
+    public DbSet<User> Users { get; set; }
+    public DbSet<Account> Accounts { get; set; }
+    public DbSet<Contact> Contacts { get; set; }
+    public DbSet<Address> Addresses { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder options)
+    {
+        // var cs = "Server=localhost;Database=UserDemo;Trusted_Connection=True;TrustServerCertificate=True;";
+        var cs = "Server=94.46.180.24;Database=codedev2026;User Id=fcoelho; Password=NS8cVzc2_kpfrc5@;TrustServerCertificate=True;";
+        options.UseSqlServer(cs);
+    }
+}
 
 class User
 {
@@ -10,6 +42,7 @@ class User
     public string LastName { get; set; }
     public string IdCard { get; set; }
     public string TaxNumber { get; set; }
+    public string Nickname { get; set; }
     public Account Account { get; set; } // Composition =>  1-1
     public List<Contact> Contacts { get; set; } // 1-n
     public List<Address> Addresses { get; set; } // n-n
@@ -60,4 +93,3 @@ enum ContactType
     Phone,
     Email,
 }
-
