@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 Console.WriteLine($"Hello world");
 
 // Entity Framework Core
@@ -20,29 +18,15 @@ foreach (var firstName in db.Users)
 db.Users.Add(new User("John", "Doe"));
 db.SaveChanges();
 
-class ApplicationContext : DbContext
+public class User
 {
-    public DbSet<User> Users { get; set; }
-    public DbSet<Account> Accounts { get; set; }
-    public DbSet<Contact> Contacts { get; set; }
-    public DbSet<Address> Addresses { get; set; }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder options)
-    {
-        // var cs = "Server=localhost;Database=UserDemo;Trusted_Connection=True;TrustServerCertificate=True;";
-        var cs = "Server=94.46.180.24;Database=codedev2026;User Id=fcoelho; Password=NS8cVzc2_kpfrc5@;TrustServerCertificate=True;";
-        options.UseSqlServer(cs);
-    }
-}
-
-class User
-{
-    public int Id { get; set; }
+    public int Id { get; set; } // PK
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string IdCard { get; set; }
     public string TaxNumber { get; set; }
     public string Nickname { get; set; }
+    public int Age { get; set; }
     public Account Account { get; set; } // Composition =>  1-1
     public List<Contact> Contacts { get; set; } // 1-n
     public List<Address> Addresses { get; set; } // n-n
@@ -54,23 +38,25 @@ class User
     }
 }
 
-class Account // 1 - 1
+public class Account // 1 - 1
 {
-    public int Id { get; set; }
+    public int Id { get; set; } // PK
     public string Username { get; set; }
     public string Password { get; set; }
+    public int UserId { get; set; }
     public User User { get; set; }
 }
 
-class Contact
+public class Contact
 {
     public int Id { get; set; }
     public string Value { get; set; }
     public ContactType Type { get; set; }
+    public int UserId { get; set; }
     public User User { get; set; } // navigation property
 }
 
-class Address // n-n
+public class Address // n-n
 {
     public int Id { get; set; }
     public string StreetOne { get; set; }
@@ -82,13 +68,13 @@ class Address // n-n
     public List<User> Users { get; set; }
 }
 
-enum AddressType
+public enum AddressType
 {
     Billing,
     Shipping
 }
 
-enum ContactType
+public enum ContactType
 {
     Phone,
     Email,
