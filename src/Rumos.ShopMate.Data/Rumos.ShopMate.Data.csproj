@@ -10,4 +10,8 @@
       <ProjectReference Include="..\Rumos.ShopMate.Domain\Rumos.ShopMate.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.10" />
+    </ItemGroup>
+
 </Project>

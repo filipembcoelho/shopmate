@@ -4,6 +4,7 @@ using Rumos.ShopMate.Domain.Model;
 namespace Rumos.ShopMate.Data;
 
 public static class Database
+    
 {
     private static List<User> _users;
     private static List<ShoppingList> _shoppingLists;

@@ -3,10 +3,23 @@ using Rumos.ShopMate.Domain.Model.Common;
 
 namespace Rumos.ShopMate.Domain.Model;
 
-public class Activity(string description) : AuditableEntity
+public class Activity : AuditableEntity
 {
-    public string Description { get; set; } = ValidateDescription(description);
+    public string Description { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+    public int ShoppingListId { get; set; }
+    public ShoppingList ShoppingList { get; set; }
+
+    // EF
+    private Activity()
+    {
+    }
+
+    public Activity(string description) : this()
+    {
+        Description = ValidateDescription(description);
+    }
 
     private static string ValidateDescription(string description)
     {

@@ -6,8 +6,12 @@ namespace Rumos.ShopMate.Domain.Model;
 
 public class ShoppingListMember : Entity
 {
+    public int UserId { get; set; }
     public User User { get; set; }
     public ShoppingListRole Role { get; set; }
+
+    public int ShoppingListId { get; set; }
+    public ShoppingList ShoppingList { get; set; }
 
     internal ShoppingListMember(User user, ShoppingListRole role)
     {

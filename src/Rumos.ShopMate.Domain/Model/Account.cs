@@ -10,8 +10,15 @@ public class Account : AuditableEntity
 
     public string Username { get; set; }
     public string Password { get; set; }
+    public int UserId { get; set; }
+    public User User { get; set; }
 
-    public Account(string username, string password)
+    // EF
+    private Account()
+    {
+    }
+
+    public Account(string username, string password) : this()
     {
         ChangeUsername(username);
         ChangePassword(password);

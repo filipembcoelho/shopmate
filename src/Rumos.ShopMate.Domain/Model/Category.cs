@@ -7,6 +7,12 @@ public class Category : AuditableEntity
 {
     public string Value { get; set; }
 
+    // EF
+    private Category()
+    {
+        
+    }
+    
     public Category(string name)
     {
         if (string.IsNullOrWhiteSpace(name))

@@ -8,6 +8,10 @@ public class User : Entity
     public Name Name { get; set; }
     public Account Account { get; set; }
 
+    private User()
+    {
+    }
+    
     public User(string fullName, string username, string password)
     {
         Name = Name.Parse(fullName);
@@ -35,3 +39,5 @@ public class User : Entity
         return Name.ToString() + " (" + Account.Username + ")";
     }
 }
+
+// Users: Id (PK), FirstName, LastName, MiddleNames

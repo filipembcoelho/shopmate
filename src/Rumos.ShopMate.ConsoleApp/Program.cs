@@ -4,4 +4,3 @@ using Rumos.ShopMate.Domain.Model;
 
 ShopMateConsoleApplication application = new ShopMateConsoleApplication();
 application.Run();
-

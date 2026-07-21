@@ -6,6 +6,8 @@ using Rumos.ShopMate.Domain.Utils;
 
 namespace Rumos.ShopMate.Domain.Model;
 
+// ShoppingLists: Id (PK); Name,  OwnerId (FK => user)
+
 public class ShoppingList : AuditableEntity
 {
     private readonly List<ShoppingListMember> _members;
@@ -13,6 +15,7 @@ public class ShoppingList : AuditableEntity
     private readonly List<Activity> _activities;
 
     public string Name { get; set; }
+    public int OwnerId { get; set; }
     public User Owner { get; set; }
     public IReadOnlyList<ShoppingListMember> Members { get; set; }
     public IReadOnlyList<ShoppingListItem> Items { get; set; }
