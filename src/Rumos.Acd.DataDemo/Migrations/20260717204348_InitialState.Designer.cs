@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Rumos.Acd.DataDemo;
 
 #nullable disable
 
 namespace Rumos.Acd.DataDemo.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20260717192611_InitialState")]
+    [Migration("20260717204348_InitialState")]
     partial class InitialState
     {
         /// <inheritdoc />
@@ -23,7 +24,22 @@ namespace Rumos.Acd.DataDemo.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Account", b =>
+            modelBuilder.Entity("AddressUser", b =>
+                {
+                    b.Property<int>("AddressesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AddressesId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("AddressUser");
+                });
+
+            modelBuilder.Entity("Rumos.Acd.DataDemo.Account", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -48,7 +64,7 @@ namespace Rumos.Acd.DataDemo.Migrations
                     b.ToTable("Accounts");
                 });
 
-            modelBuilder.Entity("Address", b =>
+            modelBuilder.Entity("Rumos.Acd.DataDemo.Address", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,22 +95,7 @@ namespace Rumos.Acd.DataDemo.Migrations
                     b.ToTable("Addresses");
                 });
 
-            modelBuilder.Entity("AddressUser", b =>
-                {
-                    b.Property<int>("AddressesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UsersId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AddressesId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("AddressUser");
-                });
-
-            modelBuilder.Entity("Contact", b =>
+            modelBuilder.Entity("Rumos.Acd.DataDemo.Contact", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -118,7 +119,7 @@ namespace Rumos.Acd.DataDemo.Migrations
                     b.ToTable("Contacts");
                 });
 
-            modelBuilder.Entity("User", b =>
+            modelBuilder.Entity("Rumos.Acd.DataDemo.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -146,35 +147,35 @@ namespace Rumos.Acd.DataDemo.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Account", b =>
-                {
-                    b.HasOne("User", "User")
-                        .WithOne("Account")
-                        .HasForeignKey("Account", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("AddressUser", b =>
                 {
-                    b.HasOne("Address", null)
+                    b.HasOne("Rumos.Acd.DataDemo.Address", null)
                         .WithMany()
                         .HasForeignKey("AddressesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("User", null)
+                    b.HasOne("Rumos.Acd.DataDemo.User", null)
                         .WithMany()
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Contact", b =>
+            modelBuilder.Entity("Rumos.Acd.DataDemo.Account", b =>
                 {
-                    b.HasOne("User", "User")
+                    b.HasOne("Rumos.Acd.DataDemo.User", "User")
+                        .WithOne("Account")
+                        .HasForeignKey("Rumos.Acd.DataDemo.Account", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Rumos.Acd.DataDemo.Contact", b =>
+                {
+                    b.HasOne("Rumos.Acd.DataDemo.User", "User")
                         .WithMany("Contacts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -183,7 +184,7 @@ namespace Rumos.Acd.DataDemo.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("User", b =>
+            modelBuilder.Entity("Rumos.Acd.DataDemo.User", b =>
                 {
                     b.Navigation("Account");
 
