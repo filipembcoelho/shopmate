@@ -8,7 +8,7 @@ public class ListPicker(ConsoleUi ui)
 {
     public ShoppingList ChooseShoppingList(User currentUser)
     {
-        var shoppingLists = Database.GetShoppingListsFor(currentUser);
+        var shoppingLists = ApplicationContext.GetShoppingListsFor(currentUser);
 
         if (shoppingLists.Count == 0)
         {

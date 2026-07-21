@@ -87,7 +87,7 @@ public class UserMenu(ConsoleUi ui, User currentUser)
         ui.Clear();
         ui.ShowTitle("MY SHOPPING LISTS");
 
-        var shoppingLists = Database.GetShoppingListsFor(currentUser);
+        var shoppingLists = ApplicationContext.GetShoppingListsFor(currentUser);
 
         if (shoppingLists.Count == 0)
         {
@@ -114,7 +114,7 @@ public class UserMenu(ConsoleUi ui, User currentUser)
         ui.ShowTitle("CREATE SHOPPING LIST");
 
         var name = ui.AskText("List name");
-        var shoppingList = Database.CreateShoppingList(name, currentUser);
+        var shoppingList = ApplicationContext.CreateShoppingList(name, currentUser);
 
         ui.ShowMessage("Created list: " + shoppingList.Name);
         ui.Pause();
@@ -196,7 +196,7 @@ public class UserMenu(ConsoleUi ui, User currentUser)
         }
 
         var username = ui.AskText("Username to share with");
-        var user = Database.FindUserByUsername(username);
+        var user = ApplicationContext.FindUserByUsername(username);
 
         if (user == null)
         {
@@ -256,7 +256,7 @@ public class UserMenu(ConsoleUi ui, User currentUser)
         ui.Clear();
         ui.ShowTitle("PROGRESS DASHBOARD");
 
-        var shoppingLists = Database.GetShoppingListsFor(currentUser);
+        var shoppingLists = ApplicationContext.GetShoppingListsFor(currentUser);
 
         if (shoppingLists.Count == 0)
         {

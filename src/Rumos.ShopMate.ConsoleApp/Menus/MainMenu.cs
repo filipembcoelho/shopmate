@@ -10,7 +10,7 @@ public class MainMenu(ConsoleUi ui)
 {
     public void Show()
     {
-        Database.SeedData();
+        ApplicationContext.SeedData();
 
         var exit = false;
 
@@ -56,7 +56,7 @@ public class MainMenu(ConsoleUi ui)
         var username = ui.AskText("Username");
         var password = ui.AskPassword("Password");
 
-        var user = Database.Login(username, password);
+        var user = ApplicationContext.Login(username, password);
 
         if (user == null)
         {
@@ -80,7 +80,7 @@ public class MainMenu(ConsoleUi ui)
         try
         {
             var fullName = ui.AskText("Full name");
-            var suggestedUsername = UsernameUtils.SuggestUsername(fullName, Database.Users);
+            var suggestedUsername = UsernameUtils.SuggestUsername(fullName, ApplicationContext.Users);
 
             ui.ShowMessage("Suggested username: " + suggestedUsername);
             var username = ui.AskText("Username (press Enter to use suggestion)");
@@ -109,7 +109,7 @@ public class MainMenu(ConsoleUi ui)
                 return;
             }
 
-            var user = Database.RegisterUser(fullName, username, password);
+            var user = ApplicationContext.RegisterUser(fullName, username, password);
 
             ui.ShowMessage("User created: " + user);
         }
