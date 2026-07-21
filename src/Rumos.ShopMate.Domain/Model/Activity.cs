@@ -1,8 +1,9 @@
 using Rumos.ShopMate.Domain.Exceptions;
+using Rumos.ShopMate.Domain.Model.Common;
 
 namespace Rumos.ShopMate.Domain.Model;
 
-public class Activity(string description)
+public class Activity(string description) : AuditableEntity
 {
     public string Description { get; set; } = ValidateDescription(description);
     public DateTime CreatedAt { get; set; } = DateTime.Now;

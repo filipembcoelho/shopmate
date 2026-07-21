@@ -1,10 +1,12 @@
 using Rumos.ShopMate.Domain.Exceptions;
+using Rumos.ShopMate.Domain.Interfaces;
+using Rumos.ShopMate.Domain.Model.Common;
 using Rumos.ShopMate.Domain.Model.Enums;
 using Rumos.ShopMate.Domain.Utils;
 
 namespace Rumos.ShopMate.Domain.Model;
 
-public class ShoppingList
+public class ShoppingList : AuditableEntity
 {
     private readonly List<ShoppingListMember> _members;
     private readonly List<ShoppingListItem> _items;

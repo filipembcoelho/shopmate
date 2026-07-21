@@ -1,8 +1,9 @@
 using Rumos.ShopMate.Domain.Exceptions;
+using Rumos.ShopMate.Domain.Model.Common;
 
 namespace Rumos.ShopMate.Domain.Model;
 
-public class User
+public class User : Entity
 {
     public Name Name { get; set; }
     public Account Account { get; set; }

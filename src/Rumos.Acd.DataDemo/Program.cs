@@ -10,7 +10,7 @@ ApplicationContext db = new ApplicationContext();
 //db.Database.EnsureDeleted();
 db.Database.Migrate();
 
-foreach (var dbUser in db.Users)
+foreach (var dbUser in db.Users) // 
 {
 
 
@@ -22,6 +22,7 @@ foreach (var dbUser in db.Users)
     }
 
 }
+
 
 
 

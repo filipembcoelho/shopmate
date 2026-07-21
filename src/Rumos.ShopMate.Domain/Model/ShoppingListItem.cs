@@ -1,9 +1,10 @@
 using Rumos.ShopMate.Domain.Exceptions;
+using Rumos.ShopMate.Domain.Model.Common;
 using Rumos.ShopMate.Domain.Model.Enums;
 
 namespace Rumos.ShopMate.Domain.Model;
 
-public class ShoppingListItem
+public class ShoppingListItem : AuditableEntity
 {
     public string Name { get; set; }
     public bool IsCompleted { get; set; }

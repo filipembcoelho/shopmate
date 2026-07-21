@@ -1,9 +1,10 @@
 using Rumos.ShopMate.Domain.Exceptions;
+using Rumos.ShopMate.Domain.Model.Common;
 using Rumos.ShopMate.Domain.Model.Enums;
 
 namespace Rumos.ShopMate.Domain.Model;
 
-public class ShoppingListMember
+public class ShoppingListMember : Entity
 {
     public User User { get; set; }
     public ShoppingListRole Role { get; set; }

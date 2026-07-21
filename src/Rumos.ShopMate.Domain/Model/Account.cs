@@ -1,8 +1,9 @@
 using Rumos.ShopMate.Domain.Exceptions;
+using Rumos.ShopMate.Domain.Model.Common;
 
 namespace Rumos.ShopMate.Domain.Model;
 
-public class Account
+public class Account : AuditableEntity
 {
     private const int MinimumPasswordLength = 8;
     private const string SpecialCharacters = "!@#$%^&*()-_=+[]{};:,.<>?/";

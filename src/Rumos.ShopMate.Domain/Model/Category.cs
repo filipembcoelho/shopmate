@@ -1,8 +1,9 @@
 using Rumos.ShopMate.Domain.Exceptions;
+using Rumos.ShopMate.Domain.Model.Common;
 
 namespace Rumos.ShopMate.Domain.Model;
 
-public class Category
+public class Category : AuditableEntity
 {
     public string Value { get; set; }
 
