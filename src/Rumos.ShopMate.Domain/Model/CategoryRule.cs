@@ -3,10 +3,20 @@ using Rumos.ShopMate.Domain.Model.Common;
 
 namespace Rumos.ShopMate.Domain.Model;
 
-public class CategoryRule(string categoryName) : AuditableEntity
+public class CategoryRule : AuditableEntity
 {
-    public string CategoryName { get; set; } = ValidateCategoryName(categoryName);
-    public List<string> Words { get; set; } = new List<string>();
+    public string CategoryName { get; set; }
+    public List<string> Words { get; set; }
+
+    private CategoryRule()
+    {
+        Words = new List<string>();
+    }
+
+    public CategoryRule(string categoryName) : this()
+    {
+        CategoryName = ValidateCategoryName(categoryName);
+    }
 
     public void AddWord(string word)
     {

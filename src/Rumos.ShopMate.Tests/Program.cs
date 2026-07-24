@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using Rumos.ShopMate.ConsoleApp.Application;
 using Rumos.ShopMate.Data;
 using Rumos.ShopMate.Domain.Exceptions;
 using Rumos.ShopMate.Domain.Model;
@@ -25,6 +27,9 @@ ActivityRejectsEmptyDescription();
 ShoppingListRejectsInvalidRole();
 ShoppingListItemRejectsInvalidUnit();
 ShoppingListItemRejectsNullCategory();
+EfModelIncludesShopMateEntities();
+SeedDataAddsInitialAggregate();
+ConsoleApplicationAcceptsContext();
 
 if (failedTests > 0)
 {
@@ -496,6 +501,85 @@ void ShoppingListItemRejectsNullCategory()
         }
 
         AssertTrue(exceptionWasThrown, "Expected DomainException.");
+
+        PassTest(testName);
+    }
+    catch (Exception ex)
+    {
+        FailTest(testName, ex);
+    }
+}
+
+void EfModelIncludesShopMateEntities()
+{
+    var testName = "EF model includes ShopMate entities";
+
+    try
+    {
+        var options = new DbContextOptionsBuilder<ApplicationContext>()
+            .UseSqlServer("Server=localhost;Database=ShopMateTests;Trusted_Connection=True;TrustServerCertificate=True;")
+            .Options;
+
+        using var context = new ApplicationContext(options);
+        var entityNames = context.Model.GetEntityTypes()
+            .Select(entityType => entityType.ClrType.Name)
+            .ToList();
+
+        AssertTrue(entityNames.Contains(nameof(User)), "EF model should include User.");
+        AssertTrue(entityNames.Contains(nameof(Account)), "EF model should include Account.");
+        AssertTrue(entityNames.Contains(nameof(ShoppingList)), "EF model should include ShoppingList.");
+        AssertTrue(entityNames.Contains(nameof(ShoppingListItem)), "EF model should include ShoppingListItem.");
+        AssertTrue(entityNames.Contains(nameof(ShoppingListMember)), "EF model should include ShoppingListMember.");
+        AssertTrue(entityNames.Contains(nameof(Activity)), "EF model should include Activity.");
+        AssertTrue(entityNames.Contains(nameof(Category)), "EF model should include Category.");
+        AssertTrue(entityNames.Contains(nameof(CategoryRule)), "EF model should include CategoryRule.");
+
+        PassTest(testName);
+    }
+    catch (Exception ex)
+    {
+        FailTest(testName, ex);
+    }
+}
+
+void SeedDataAddsInitialAggregate()
+{
+    var testName = "Seed data adds the initial aggregate";
+
+    try
+    {
+        var options = new DbContextOptionsBuilder<ApplicationContext>()
+            .UseSqlServer("Server=localhost;Database=ShopMateTests;Trusted_Connection=True;TrustServerCertificate=True;")
+            .Options;
+
+        using var context = new ApplicationContext(options);
+        context.SeedData();
+
+        AssertTrue(context.ChangeTracker.Entries<User>().Count() >= 5, "Seed should add at least five users.");
+        AssertTrue(context.ChangeTracker.Entries<ShoppingList>().Count() >= 3, "Seed should add at least three shopping lists.");
+
+        PassTest(testName);
+    }
+    catch (Exception ex)
+    {
+        FailTest(testName, ex);
+    }
+}
+
+void ConsoleApplicationAcceptsContext()
+{
+    var testName = "Console application accepts ApplicationContext";
+
+    try
+    {
+        var options = new DbContextOptionsBuilder<ApplicationContext>()
+            .UseSqlServer("Server=localhost;Database=ShopMateTests;Trusted_Connection=True;TrustServerCertificate=True;")
+            .Options;
+
+        using var context = new ApplicationContext(options);
+        var application = new ShopMateConsoleApplication(context);
+
+        AssertTrue(application != null, "Console application should keep the context it receives.");
 
         PassTest(testName);
     }

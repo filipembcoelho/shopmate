@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Rumos.ShopMate.ConsoleApp.Components;
 using Rumos.ShopMate.ConsoleApp.Ui;
 using Rumos.ShopMate.Data;
@@ -8,9 +9,9 @@ using Rumos.ShopMate.Domain.Utils;
 
 namespace Rumos.ShopMate.ConsoleApp.Menus;
 
-public class UserMenu(ConsoleUi ui, User currentUser)
+public class UserMenu(ConsoleUi ui, User currentUser, ApplicationContext context)
 {
-    private readonly ListPicker _listPicker = new ListPicker(ui);
+    private readonly ListPicker _listPicker = new ListPicker(ui, context);
 
     public void Show()
     {
@@ -87,7 +88,7 @@ public class UserMenu(ConsoleUi ui, User currentUser)
         ui.Clear();
         ui.ShowTitle("MY SHOPPING LISTS");
 
-        var shoppingLists = ApplicationContext.GetShoppingListsFor(currentUser);
+        var shoppingLists = _listPicker.GetShoppingListsFor(currentUser);
 
         if (shoppingLists.Count == 0)
         {
@@ -114,7 +115,9 @@ public class UserMenu(ConsoleUi ui, User currentUser)
         ui.ShowTitle("CREATE SHOPPING LIST");
 
         var name = ui.AskText("List name");
-        var shoppingList = ApplicationContext.CreateShoppingList(name, currentUser);
+        var shoppingList = new ShoppingList(name, currentUser);
+        context.ShoppingLists.Add(shoppingList);
+        context.SaveChanges();
 
         ui.ShowMessage("Created list: " + shoppingList.Name);
         ui.Pause();
@@ -147,6 +150,7 @@ public class UserMenu(ConsoleUi ui, User currentUser)
         ui.ShowMessage("Using unit: " + unit);
 
         var item = shoppingList.AddItem(selectedProduct.Name, quantity, unit, currentUser);
+        context.SaveChanges();
 
         ui.ShowMessage("Added item: " + item.Name);
         ui.ShowMessage("Auto category: " + item.Category.Value);
@@ -176,6 +180,7 @@ public class UserMenu(ConsoleUi ui, User currentUser)
         }
 
         shoppingList.CompleteItem(item, currentUser);
+        context.SaveChanges();
 
         ui.ShowMessage("Completed item: " + item.Name);
         ui.WriteProgressBar(shoppingList);
@@ -196,7 +201,10 @@ public class UserMenu(ConsoleUi ui, User currentUser)
         }
 
         var username = ui.AskText("Username to share with");
-        var user = ApplicationContext.FindUserByUsername(username);
+        var normalizedUsername = username.Trim().ToLower();
+        var user = context.Users
+            .Include(existingUser => existingUser.Account)
+            .SingleOrDefault(existingUser => existingUser.Account.Username == normalizedUsername);
 
         if (user == null)
         {
@@ -210,6 +218,7 @@ public class UserMenu(ConsoleUi ui, User currentUser)
         var role = ui.GetRoleFromOption(ui.AskNumber("Role"));
 
         shoppingList.ShareWith(user, role, currentUser);
+        context.SaveChanges();
 
         ui.ShowMessage("Shared list with " + user.Name + " as " + role + ".");
         ui.Pause();
@@ -229,6 +238,7 @@ public class UserMenu(ConsoleUi ui, User currentUser)
         }
 
         shoppingList.Archive(currentUser);
+        context.SaveChanges();
 
         ui.ShowMessage("Archived list: " + shoppingList.Name);
         ui.Pause();
@@ -247,7 +257,7 @@ public class UserMenu(ConsoleUi ui, User currentUser)
             return;
         }
 
-        var shoppingModeMenu = new ShoppingModeMenu(ui, shoppingList, currentUser);
+        var shoppingModeMenu = new ShoppingModeMenu(ui, shoppingList, currentUser, context);
         shoppingModeMenu.Show();
     }
 
@@ -256,7 +266,7 @@ public class UserMenu(ConsoleUi ui, User currentUser)
         ui.Clear();
         ui.ShowTitle("PROGRESS DASHBOARD");
 
-        var shoppingLists = ApplicationContext.GetShoppingListsFor(currentUser);
+        var shoppingLists = _listPicker.GetShoppingListsFor(currentUser);
 
         if (shoppingLists.Count == 0)
         {

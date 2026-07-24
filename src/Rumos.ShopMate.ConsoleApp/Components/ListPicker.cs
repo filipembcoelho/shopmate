@@ -1,14 +1,15 @@
+using Microsoft.EntityFrameworkCore;
 using Rumos.ShopMate.ConsoleApp.Ui;
 using Rumos.ShopMate.Data;
 using Rumos.ShopMate.Domain.Model;
 
 namespace Rumos.ShopMate.ConsoleApp.Components;
 
-public class ListPicker(ConsoleUi ui)
+public class ListPicker(ConsoleUi ui, ApplicationContext context)
 {
     public ShoppingList ChooseShoppingList(User currentUser)
     {
-        var shoppingLists = ApplicationContext.GetShoppingListsFor(currentUser);
+        var shoppingLists = GetShoppingListsFor(currentUser);
 
         if (shoppingLists.Count == 0)
         {
@@ -32,6 +33,21 @@ public class ListPicker(ConsoleUi ui)
         }
 
         return shoppingLists[option - 1];
+    }
+
+    public List<ShoppingList> GetShoppingListsFor(User currentUser)
+    {
+        return context.ShoppingLists
+            .Include(shoppingList => shoppingList.Owner)
+                .ThenInclude(owner => owner.Account)
+            .Include(shoppingList => shoppingList.Members)
+                .ThenInclude(member => member.User)
+                    .ThenInclude(user => user.Account)
+            .Include(shoppingList => shoppingList.Items)
+                .ThenInclude(item => item.Category)
+            .Include(shoppingList => shoppingList.Activities)
+            .Where(shoppingList => shoppingList.Members.Any(member => member.UserId == currentUser.Id))
+            .ToList();
     }
 
     public ShoppingListItem ChooseItem(ShoppingList shoppingList)

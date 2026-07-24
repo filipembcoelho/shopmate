@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Rumos.ShopMate.ConsoleApp.Ui;
 using Rumos.ShopMate.Data;
 using Rumos.ShopMate.Domain.Exceptions;
@@ -6,12 +7,10 @@ using Rumos.ShopMate.Domain.Utils;
 
 namespace Rumos.ShopMate.ConsoleApp.Menus;
 
-public class MainMenu(ConsoleUi ui)
+public class MainMenu(ConsoleUi ui, ApplicationContext context)
 {
     public void Show()
     {
-        ApplicationContext.SeedData();
-
         var exit = false;
 
         while (!exit)
@@ -56,7 +55,12 @@ public class MainMenu(ConsoleUi ui)
         var username = ui.AskText("Username");
         var password = ui.AskPassword("Password");
 
-        var user = ApplicationContext.Login(username, password);
+        var normalizedUsername = username.Trim().ToLower();
+        var user = context.Users
+            .Include(existingUser => existingUser.Account)
+            .SingleOrDefault(existingUser =>
+                existingUser.Account.Username == normalizedUsername &&
+                existingUser.Account.Password == password);
 
         if (user == null)
         {
@@ -68,7 +72,7 @@ public class MainMenu(ConsoleUi ui)
         ui.ShowMessage("Welcome, " + user.Name + ".");
         ui.Pause();
 
-        var userMenu = new UserMenu(ui, user);
+        var userMenu = new UserMenu(ui, user, context);
         userMenu.Show();
     }
 
@@ -80,7 +84,11 @@ public class MainMenu(ConsoleUi ui)
         try
         {
             var fullName = ui.AskText("Full name");
-            var suggestedUsername = UsernameUtils.SuggestUsername(fullName, ApplicationContext.Users);
+            var existingUsers = context.Users
+                .Include(existingUser => existingUser.Account)
+                .AsNoTracking()
+                .ToList();
+            var suggestedUsername = UsernameUtils.SuggestUsername(fullName, existingUsers);
 
             ui.ShowMessage("Suggested username: " + suggestedUsername);
             var username = ui.AskText("Username (press Enter to use suggestion)");
@@ -109,7 +117,9 @@ public class MainMenu(ConsoleUi ui)
                 return;
             }
 
-            var user = ApplicationContext.RegisterUser(fullName, username, password);
+            var user = new User(fullName, username, password);
+            context.Users.Add(user);
+            context.SaveChanges();
 
             ui.ShowMessage("User created: " + user);
         }

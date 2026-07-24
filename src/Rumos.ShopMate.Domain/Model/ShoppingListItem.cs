@@ -10,9 +10,17 @@ public class ShoppingListItem : AuditableEntity
     public bool IsCompleted { get; set; }
     public int Quantity { get; set; }
     public Unit Unit { get; set; }
+    public int ShoppingListId { get; set; }
+    public ShoppingList ShoppingList { get; set; }
+    public int CategoryId { get; set; }
     public Category Category { get; set; }
 
-    internal ShoppingListItem(string name, int quantity, Unit unit)
+    // EF
+    private ShoppingListItem()
+    {
+    }
+
+    internal ShoppingListItem(string name, int quantity, Unit unit) : this()
     {
         ValidateName(name);
         ValidateQuantity(quantity);

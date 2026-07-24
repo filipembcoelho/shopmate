@@ -13,6 +13,11 @@ public class ShoppingListMember : Entity
     public int ShoppingListId { get; set; }
     public ShoppingList ShoppingList { get; set; }
 
+    // EF
+    private ShoppingListMember()
+    {
+    }
+
     internal ShoppingListMember(User user, ShoppingListRole role)
     {
         if (user == null)

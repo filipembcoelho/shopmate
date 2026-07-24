@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="..\Rumos.ShopMate.ConsoleApp\Rumos.ShopMate.ConsoleApp.csproj" />
     <ProjectReference Include="..\Rumos.ShopMate.Domain\Rumos.ShopMate.Domain.csproj" />
     <ProjectReference Include="..\Rumos.ShopMate.Data\Rumos.ShopMate.Data.csproj" />
   </ItemGroup>

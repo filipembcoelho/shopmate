@@ -10,9 +10,8 @@ public class Category : AuditableEntity
     // EF
     private Category()
     {
-        
     }
-    
+
     public Category(string name)
     {
         if (string.IsNullOrWhiteSpace(name))

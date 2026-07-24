@@ -1,10 +1,11 @@
 using Rumos.ShopMate.ConsoleApp.Ui;
+using Rumos.ShopMate.Data;
 using Rumos.ShopMate.Domain.Model;
 using Rumos.ShopMate.Domain.Model.Enums;
 
 namespace Rumos.ShopMate.ConsoleApp.Menus;
 
-public class ShoppingModeMenu(ConsoleUi ui, ShoppingList shoppingList, User currentUser)
+public class ShoppingModeMenu(ConsoleUi ui, ShoppingList shoppingList, User currentUser, ApplicationContext context)
 {
     private int _currentItemIndex;
 
@@ -46,6 +47,7 @@ public class ShoppingModeMenu(ConsoleUi ui, ShoppingList shoppingList, User curr
             {
                 case "1":
                     shoppingList.CompleteItem(item, currentUser);
+                    context.SaveChanges();
                     ui.ShowMessage("Found: " + item.Name);
                     ui.Pause();
                     break;
@@ -120,6 +122,7 @@ public class ShoppingModeMenu(ConsoleUi ui, ShoppingList shoppingList, User curr
         }
 
         var item = shoppingList.AddItem(itemName, 1, Unit.Each, currentUser);
+        context.SaveChanges();
 
         ui.ShowMessage("Surprise item added: " + item.Name);
         ui.ShowMessage("Auto category: " + item.Category.Value);
