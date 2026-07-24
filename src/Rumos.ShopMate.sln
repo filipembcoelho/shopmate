@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0EBC6B54-DC5
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rumos.Acd.CodeDemo", "Rumos.Acd.CodeDemo\Rumos.Acd.CodeDemo.csproj", "{00E75E12-048B-4678-8F2B-1654F9FD173F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rumos.ShopMate.Services", "Rumos.ShopMate.Services\Rumos.ShopMate.Services.csproj", "{BD99D2B8-3455-4763-B2D0-55DFCFD6C511}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +117,18 @@ Global
 		{00E75E12-048B-4678-8F2B-1654F9FD173F}.Release|x64.Build.0 = Release|Any CPU
 		{00E75E12-048B-4678-8F2B-1654F9FD173F}.Release|x86.ActiveCfg = Release|Any CPU
 		{00E75E12-048B-4678-8F2B-1654F9FD173F}.Release|x86.Build.0 = Release|Any CPU
+		{BD99D2B8-3455-4763-B2D0-55DFCFD6C511}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD99D2B8-3455-4763-B2D0-55DFCFD6C511}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD99D2B8-3455-4763-B2D0-55DFCFD6C511}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BD99D2B8-3455-4763-B2D0-55DFCFD6C511}.Debug|x64.Build.0 = Debug|Any CPU
+		{BD99D2B8-3455-4763-B2D0-55DFCFD6C511}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BD99D2B8-3455-4763-B2D0-55DFCFD6C511}.Debug|x86.Build.0 = Debug|Any CPU
+		{BD99D2B8-3455-4763-B2D0-55DFCFD6C511}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD99D2B8-3455-4763-B2D0-55DFCFD6C511}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD99D2B8-3455-4763-B2D0-55DFCFD6C511}.Release|x64.ActiveCfg = Release|Any CPU
+		{BD99D2B8-3455-4763-B2D0-55DFCFD6C511}.Release|x64.Build.0 = Release|Any CPU
+		{BD99D2B8-3455-4763-B2D0-55DFCFD6C511}.Release|x86.ActiveCfg = Release|Any CPU
+		{BD99D2B8-3455-4763-B2D0-55DFCFD6C511}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -127,6 +141,7 @@ Global
 		{72E60A8A-2C24-43CB-9CF1-B75D73ABC1E1} = {97DD7269-DA0B-4B9E-8539-AD0911A17765}
 		{1B4F36C7-B9FD-4C0D-A02A-E6DFD5C9D785} = {97DD7269-DA0B-4B9E-8539-AD0911A17765}
 		{00E75E12-048B-4678-8F2B-1654F9FD173F} = {97DD7269-DA0B-4B9E-8539-AD0911A17765}
+		{BD99D2B8-3455-4763-B2D0-55DFCFD6C511} = {0EBC6B54-DC5C-45AC-8B3A-D898904CE1DB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DC8167BB-A4AC-4294-ADE8-81F3CCDCA114}

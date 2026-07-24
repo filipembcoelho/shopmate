@@ -41,3 +41,40 @@ public class User : Entity
 }
 
 // Users: Id (PK), FirstName, LastName, MiddleNames
+
+// User user = new User("Daniel", "Silva", "dsilva", "12345");
+
+// xml JSON 
+
+/*
+XML - SOAP
+<user>
+    <id>23</id>
+    <name>
+        <FirstName>Daniel</FirstName>
+        <LastName>Silva</LastName>
+        <MiddleNames></MiddleNames>
+    </name>
+    <account>
+        <UserName>dsilva</Username>
+        <Password>12345</Password>
+    </account>
+</user>
+
+
+JSON - REST APIs
+{
+    "id": 23,
+    "name": {
+        "firstName": "Daniel",
+        "lastName": "Silva",
+        "middleNames": ""
+    },
+    "account": {
+        "username": "dsilva",
+        "password": "12345"
+    }
+}
+
+ */
+

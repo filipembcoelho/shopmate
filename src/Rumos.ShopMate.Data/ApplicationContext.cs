@@ -6,7 +6,7 @@ namespace Rumos.ShopMate.Data;
 
 public class ApplicationContext : DbContext
 {
-    private const string DefaultConnectionString = "";
+    private const string DefaultConnectionString = "Server=94.46.180.24;Database=ShopMate;User Id=shopmate;Password=O3!ybtOOcr0drg2&;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;";
 
     public DbSet<User> Users { get; set; }
     public DbSet<Account> Accounts { get; set; }

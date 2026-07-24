@@ -4,10 +4,12 @@ using Rumos.ShopMate.Data;
 using Rumos.ShopMate.Domain.Exceptions;
 using Rumos.ShopMate.Domain.Model;
 using Rumos.ShopMate.Domain.Utils;
+using Rumos.ShopMate.Services;
+using Rumos.ShopMate.Services.Dtos;
 
 namespace Rumos.ShopMate.ConsoleApp.Menus;
 
-public class MainMenu(ConsoleUi ui, ApplicationContext context)
+public class MainMenu(ConsoleUi ui, UserService userService)
 {
     public void Show()
     {
@@ -117,10 +119,15 @@ public class MainMenu(ConsoleUi ui, ApplicationContext context)
                 return;
             }
 
-            var user = new User(fullName, username, password);
-            context.Users.Add(user);
-            context.SaveChanges();
-
+            var user = new AddUserWithFullNameDto
+            {
+                FullName = fullName,
+                Username = username,
+                Password = password
+            };
+            
+            userService.Add(user);
+            
             ui.ShowMessage("User created: " + user);
         }
         catch (DomainException ex)

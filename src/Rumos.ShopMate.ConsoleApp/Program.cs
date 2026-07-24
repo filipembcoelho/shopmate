@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Rumos.ShopMate.ConsoleApp.Application;
 using Rumos.ShopMate.Data;
+using Rumos.ShopMate.Domain.Model;
 using Rumos.ShopMate.Domain.Model.Common;
 
 using var context = new ApplicationContext();
@@ -15,4 +16,3 @@ if (!context.Users.Any())
 
 ShopMateConsoleApplication application = new ShopMateConsoleApplication(context);
 application.Run();
-
