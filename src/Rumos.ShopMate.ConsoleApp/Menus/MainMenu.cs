@@ -1,15 +1,16 @@
-using Microsoft.EntityFrameworkCore;
 using Rumos.ShopMate.ConsoleApp.Ui;
-using Rumos.ShopMate.Data;
 using Rumos.ShopMate.Domain.Exceptions;
-using Rumos.ShopMate.Domain.Model;
-using Rumos.ShopMate.Domain.Utils;
-using Rumos.ShopMate.Services;
 using Rumos.ShopMate.Services.Dtos;
+using Rumos.ShopMate.Services.Exceptions;
+using Rumos.ShopMate.Services.Interfaces;
 
 namespace Rumos.ShopMate.ConsoleApp.Menus;
 
-public class MainMenu(ConsoleUi ui, UserService userService)
+public class MainMenu(
+    ConsoleUi ui,
+    IAuthenticationService authenticationService,
+    IUserService userService,
+    UserMenu userMenu)
 {
     public void Show()
     {
@@ -54,28 +55,34 @@ public class MainMenu(ConsoleUi ui, UserService userService)
         ui.Clear();
         ui.ShowTitle("LOGIN");
 
-        var username = ui.AskText("Username");
-        var password = ui.AskPassword("Password");
-
-        var normalizedUsername = username.Trim().ToLower();
-        var user = context.Users
-            .Include(existingUser => existingUser.Account)
-            .SingleOrDefault(existingUser =>
-                existingUser.Account.Username == normalizedUsername &&
-                existingUser.Account.Password == password);
-
-        if (user == null)
+        try
         {
-            ui.ShowError("Invalid username or password.");
+            var username = ui.AskText("Username");
+            var password = ui.AskPassword("Password");
+            var user = authenticationService.Login(username, password);
+
+            if (user == null)
+            {
+                ui.ShowError("Invalid username or password.");
+                ui.Pause();
+                return;
+            }
+
+            ui.ShowMessage("Welcome, " + user.FullName + ".");
             ui.Pause();
-            return;
+
+            userMenu.Show(user);
         }
-
-        ui.ShowMessage("Welcome, " + user.Name + ".");
-        ui.Pause();
-
-        var userMenu = new UserMenu(ui, user, context);
-        userMenu.Show();
+        catch (ServiceException ex)
+        {
+            ui.ShowError(ex.Message);
+            ui.Pause();
+        }
+        catch (DomainException ex)
+        {
+            ui.ShowDomainRule(ex.Message);
+            ui.Pause();
+        }
     }
 
     private void Register()
@@ -86,11 +93,7 @@ public class MainMenu(ConsoleUi ui, UserService userService)
         try
         {
             var fullName = ui.AskText("Full name");
-            var existingUsers = context.Users
-                .Include(existingUser => existingUser.Account)
-                .AsNoTracking()
-                .ToList();
-            var suggestedUsername = UsernameUtils.SuggestUsername(fullName, existingUsers);
+            var suggestedUsername = userService.SuggestUsername(fullName);
 
             ui.ShowMessage("Suggested username: " + suggestedUsername);
             var username = ui.AskText("Username (press Enter to use suggestion)");
@@ -119,16 +122,19 @@ public class MainMenu(ConsoleUi ui, UserService userService)
                 return;
             }
 
-            var user = new AddUserWithFullNameDto
+            var user = authenticationService.Register(new RegisterUserDto
             {
                 FullName = fullName,
                 Username = username,
                 Password = password
-            };
-            
-            userService.Add(user);
-            
-            ui.ShowMessage("User created: " + user);
+            });
+
+            ui.ShowMessage(
+                "User created: " + user.FullName + " (" + user.Username + ").");
+        }
+        catch (ServiceException ex)
+        {
+            ui.ShowError(ex.Message);
         }
         catch (DomainException ex)
         {

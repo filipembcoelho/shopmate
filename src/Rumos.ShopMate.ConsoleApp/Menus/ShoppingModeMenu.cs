@@ -1,38 +1,49 @@
 using Rumos.ShopMate.ConsoleApp.Ui;
-using Rumos.ShopMate.Data;
-using Rumos.ShopMate.Domain.Model;
 using Rumos.ShopMate.Domain.Model.Enums;
+using Rumos.ShopMate.Services.Dtos;
+using Rumos.ShopMate.Services.Interfaces;
 
 namespace Rumos.ShopMate.ConsoleApp.Menus;
 
-public class ShoppingModeMenu(ConsoleUi ui, ShoppingList shoppingList, User currentUser, ApplicationContext context)
+public class ShoppingModeMenu(
+    ConsoleUi ui,
+    IShoppingListService shoppingListService,
+    ReceiptPrinter receiptPrinter)
 {
     private int _currentItemIndex;
 
-    public void Show()
+    public void Show(
+        ShoppingListDto shoppingList,
+        UserDto currentUser)
     {
+        var activeShoppingList = shoppingList;
         var finish = false;
+        _currentItemIndex = 0;
 
         while (!finish)
         {
             ui.Clear();
-            ui.ShowTitle("SHOPPING MISSION - " + shoppingList.Name);
-            ui.WriteProgressBar(shoppingList);
+            ui.ShowTitle(
+                "SHOPPING MISSION - " + activeShoppingList.Name);
+            ui.WriteProgressBar(activeShoppingList);
             Console.WriteLine();
 
-            var item = GetCurrentPendingItem();
+            var item = GetCurrentPendingItem(activeShoppingList);
 
             if (item == null)
             {
                 ui.ShowMessage("All items are completed.");
-                var receiptPrinter = new ReceiptPrinter(ui);
-                receiptPrinter.Print(shoppingList);
+                receiptPrinter.Print(activeShoppingList);
                 ui.Pause();
                 return;
             }
 
             Console.WriteLine("Current item:");
-            Console.WriteLine(item.Name + " | " + item.Quantity + " " + item.Unit + " | " + item.Category.Value);
+            Console.WriteLine(
+                item.Name + " | " +
+                item.Quantity + " " +
+                item.Unit + " | " +
+                item.Category);
             Console.WriteLine();
             ui.WriteMenuOption("1", "Mark as found");
             ui.WriteMenuOption("2", "Skip item");
@@ -46,21 +57,24 @@ public class ShoppingModeMenu(ConsoleUi ui, ShoppingList shoppingList, User curr
             switch (option)
             {
                 case "1":
-                    shoppingList.CompleteItem(item, currentUser);
-                    context.SaveChanges();
+                    activeShoppingList = shoppingListService.CompleteItem(
+                        activeShoppingList.Id,
+                        item.Id,
+                        currentUser.Id);
                     ui.ShowMessage("Found: " + item.Name);
                     ui.Pause();
                     break;
                 case "2":
-                    MoveToNextItem();
+                    MoveToNextItem(activeShoppingList);
                     break;
                 case "3":
-                    AddSurpriseItem();
+                    activeShoppingList = AddSurpriseItem(
+                        activeShoppingList,
+                        currentUser);
                     ui.Pause();
                     break;
                 case "4":
-                    var receiptPrinter = new ReceiptPrinter(ui);
-                    receiptPrinter.Print(shoppingList);
+                    receiptPrinter.Print(activeShoppingList);
                     ui.Pause();
                     finish = true;
                     break;
@@ -75,14 +89,17 @@ public class ShoppingModeMenu(ConsoleUi ui, ShoppingList shoppingList, User curr
         }
     }
 
-    private ShoppingListItem GetCurrentPendingItem()
+    private ShoppingListItemDto GetCurrentPendingItem(
+        ShoppingListDto shoppingList)
     {
         if (shoppingList.Items.Count == 0)
         {
             return null;
         }
 
-        for (var attempts = 0; attempts < shoppingList.Items.Count; attempts++)
+        for (var attempts = 0;
+             attempts < shoppingList.Items.Count;
+             attempts++)
         {
             if (_currentItemIndex >= shoppingList.Items.Count)
             {
@@ -102,7 +119,7 @@ public class ShoppingModeMenu(ConsoleUi ui, ShoppingList shoppingList, User curr
         return null;
     }
 
-    private void MoveToNextItem()
+    private void MoveToNextItem(ShoppingListDto shoppingList)
     {
         _currentItemIndex++;
 
@@ -112,7 +129,9 @@ public class ShoppingModeMenu(ConsoleUi ui, ShoppingList shoppingList, User curr
         }
     }
 
-    private void AddSurpriseItem()
+    private ShoppingListDto AddSurpriseItem(
+        ShoppingListDto shoppingList,
+        UserDto currentUser)
     {
         var itemName = "Chocolate";
 
@@ -121,10 +140,18 @@ public class ShoppingModeMenu(ConsoleUi ui, ShoppingList shoppingList, User curr
             itemName = "Sparkling water";
         }
 
-        var item = shoppingList.AddItem(itemName, 1, Unit.Each, currentUser);
-        context.SaveChanges();
+        var item = shoppingListService.AddItem(
+            shoppingList.Id,
+            itemName,
+            1,
+            Unit.Each,
+            currentUser.Id);
 
         ui.ShowMessage("Surprise item added: " + item.Name);
-        ui.ShowMessage("Auto category: " + item.Category.Value);
+        ui.ShowMessage("Auto category: " + item.Category);
+
+        return shoppingListService.GetById(
+            shoppingList.Id,
+            currentUser.Id);
     }
 }

@@ -1,16 +1,16 @@
-using Rumos.ShopMate.Domain.Model;
+using Rumos.ShopMate.Services.Dtos;
 
 namespace Rumos.ShopMate.ConsoleApp.Ui;
 
 public class ReceiptPrinter(ConsoleUi ui)
 {
-    public void Print(ShoppingList shoppingList)
+    public void Print(ShoppingListDto shoppingList)
     {
         ui.Clear();
         ui.ShowTitle("SHOPMATE RECEIPT");
 
         Console.WriteLine("List: " + shoppingList.Name);
-        Console.WriteLine("Owner: " + shoppingList.Owner.Name);
+        Console.WriteLine("Owner: " + shoppingList.Owner.FullName);
         Console.WriteLine();
 
         Console.WriteLine("Bought:");
@@ -21,11 +21,17 @@ public class ReceiptPrinter(ConsoleUi ui)
         WriteItemsByCompletedState(shoppingList, false);
 
         Console.WriteLine();
-        Console.WriteLine("Score: " + shoppingList.CountCompletedItems() + " / " + shoppingList.Items.Count);
+        Console.WriteLine(
+            "Score: " +
+            shoppingList.CompletedItems +
+            " / " +
+            shoppingList.Items.Count);
         ui.WriteProgressBar(shoppingList);
     }
 
-    private void WriteItemsByCompletedState(ShoppingList shoppingList, bool completed)
+    private void WriteItemsByCompletedState(
+        ShoppingListDto shoppingList,
+        bool completed)
     {
         var foundAny = false;
 
@@ -33,7 +39,10 @@ public class ReceiptPrinter(ConsoleUi ui)
         {
             if (item.IsCompleted == completed)
             {
-                Console.WriteLine("- " + item.Name + " | " + item.Quantity + " " + item.Unit + " | " + item.Category.Value);
+                Console.WriteLine(
+                    "- " + item.Name +
+                    " | " + item.Quantity + " " + item.Unit +
+                    " | " + item.Category);
                 foundAny = true;
             }
         }

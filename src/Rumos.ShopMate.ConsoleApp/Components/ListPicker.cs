@@ -1,15 +1,16 @@
-using Microsoft.EntityFrameworkCore;
 using Rumos.ShopMate.ConsoleApp.Ui;
-using Rumos.ShopMate.Data;
-using Rumos.ShopMate.Domain.Model;
+using Rumos.ShopMate.Services.Dtos;
+using Rumos.ShopMate.Services.Interfaces;
 
 namespace Rumos.ShopMate.ConsoleApp.Components;
 
-public class ListPicker(ConsoleUi ui, ApplicationContext context)
+public class ListPicker(
+    ConsoleUi ui,
+    IShoppingListService shoppingListService)
 {
-    public ShoppingList ChooseShoppingList(User currentUser)
+    public ShoppingListDto ChooseShoppingList(int currentUserId)
     {
-        var shoppingLists = GetShoppingListsFor(currentUser);
+        var shoppingLists = GetShoppingListsFor(currentUserId);
 
         if (shoppingLists.Count == 0)
         {
@@ -35,22 +36,12 @@ public class ListPicker(ConsoleUi ui, ApplicationContext context)
         return shoppingLists[option - 1];
     }
 
-    public List<ShoppingList> GetShoppingListsFor(User currentUser)
+    public IReadOnlyList<ShoppingListDto> GetShoppingListsFor(int currentUserId)
     {
-        return context.ShoppingLists
-            .Include(shoppingList => shoppingList.Owner)
-                .ThenInclude(owner => owner.Account)
-            .Include(shoppingList => shoppingList.Members)
-                .ThenInclude(member => member.User)
-                    .ThenInclude(user => user.Account)
-            .Include(shoppingList => shoppingList.Items)
-                .ThenInclude(item => item.Category)
-            .Include(shoppingList => shoppingList.Activities)
-            .Where(shoppingList => shoppingList.Members.Any(member => member.UserId == currentUser.Id))
-            .ToList();
+        return shoppingListService.GetForUser(currentUserId);
     }
 
-    public ShoppingListItem ChooseItem(ShoppingList shoppingList)
+    public ShoppingListItemDto ChooseItem(ShoppingListDto shoppingList)
     {
         if (shoppingList.Items.Count == 0)
         {

@@ -47,12 +47,15 @@ internal class ShoppingListConfiguration : IEntityTypeConfiguration<ShoppingList
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Navigation(x => x.Members)
+            .HasField("_members")
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
         builder.Navigation(x => x.Items)
+            .HasField("_items")
             .UsePropertyAccessMode(PropertyAccessMode.Field);
 
         builder.Navigation(x => x.Activities)
+            .HasField("_activities")
             .UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

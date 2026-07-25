@@ -1,26 +1,28 @@
-using Microsoft.EntityFrameworkCore;
 using Rumos.ShopMate.ConsoleApp.Components;
 using Rumos.ShopMate.ConsoleApp.Ui;
-using Rumos.ShopMate.Data;
 using Rumos.ShopMate.Domain.Exceptions;
-using Rumos.ShopMate.Domain.Model;
-using Rumos.ShopMate.Domain.Model.Enums;
 using Rumos.ShopMate.Domain.Utils;
+using Rumos.ShopMate.Services.Dtos;
+using Rumos.ShopMate.Services.Exceptions;
+using Rumos.ShopMate.Services.Interfaces;
 
 namespace Rumos.ShopMate.ConsoleApp.Menus;
 
-public class UserMenu(ConsoleUi ui, User currentUser, ApplicationContext context)
+public class UserMenu(
+    ConsoleUi ui,
+    IShoppingListService shoppingListService,
+    IProductCatalogService productCatalogService,
+    ListPicker listPicker,
+    ShoppingModeMenu shoppingModeMenu)
 {
-    private readonly ListPicker _listPicker = new ListPicker(ui, context);
-
-    public void Show()
+    public void Show(UserDto currentUser)
     {
         var logout = false;
 
         while (!logout)
         {
             ui.Clear();
-            ui.ShowTitle("USER MENU - " + currentUser.Account.Username);
+            ui.ShowTitle("USER MENU - " + currentUser.Username);
             ui.WriteMenuOption("1", "Show my shopping lists");
             ui.WriteMenuOption("2", "Create shopping list");
             ui.WriteMenuOption("3", "Add item to list");
@@ -40,31 +42,31 @@ public class UserMenu(ConsoleUi ui, User currentUser, ApplicationContext context
                 switch (option)
                 {
                     case "1":
-                        ShowShoppingLists();
+                        ShowShoppingLists(currentUser);
                         break;
                     case "2":
-                        CreateShoppingList();
+                        CreateShoppingList(currentUser);
                         break;
                     case "3":
-                        AddItemToList();
+                        AddItemToList(currentUser);
                         break;
                     case "4":
-                        CompleteItem();
+                        CompleteItem(currentUser);
                         break;
                     case "5":
-                        ShareList();
+                        ShareList(currentUser);
                         break;
                     case "6":
-                        ArchiveList();
+                        ArchiveList(currentUser);
                         break;
                     case "7":
-                        StartShoppingMission();
+                        StartShoppingMission(currentUser);
                         break;
                     case "8":
-                        ShowDashboard();
+                        ShowDashboard(currentUser);
                         break;
                     case "9":
-                        ShowActivityFeed();
+                        ShowActivityFeed(currentUser);
                         break;
                     case "0":
                         logout = true;
@@ -75,6 +77,11 @@ public class UserMenu(ConsoleUi ui, User currentUser, ApplicationContext context
                         break;
                 }
             }
+            catch (ServiceException ex)
+            {
+                ui.ShowError(ex.Message);
+                ui.Pause();
+            }
             catch (DomainException ex)
             {
                 ui.ShowDomainRule(ex.Message);
@@ -83,12 +90,12 @@ public class UserMenu(ConsoleUi ui, User currentUser, ApplicationContext context
         }
     }
 
-    private void ShowShoppingLists()
+    private void ShowShoppingLists(UserDto currentUser)
     {
         ui.Clear();
         ui.ShowTitle("MY SHOPPING LISTS");
 
-        var shoppingLists = _listPicker.GetShoppingListsFor(currentUser);
+        var shoppingLists = listPicker.GetShoppingListsFor(currentUser.Id);
 
         if (shoppingLists.Count == 0)
         {
@@ -109,26 +116,24 @@ public class UserMenu(ConsoleUi ui, User currentUser, ApplicationContext context
         ui.Pause();
     }
 
-    private void CreateShoppingList()
+    private void CreateShoppingList(UserDto currentUser)
     {
         ui.Clear();
         ui.ShowTitle("CREATE SHOPPING LIST");
 
         var name = ui.AskText("List name");
-        var shoppingList = new ShoppingList(name, currentUser);
-        context.ShoppingLists.Add(shoppingList);
-        context.SaveChanges();
+        var shoppingList = shoppingListService.Create(name, currentUser.Id);
 
         ui.ShowMessage("Created list: " + shoppingList.Name);
         ui.Pause();
     }
 
-    private void AddItemToList()
+    private void AddItemToList(UserDto currentUser)
     {
         ui.Clear();
         ui.ShowTitle("ADD ITEM");
 
-        var shoppingList = _listPicker.ChooseShoppingList(currentUser);
+        var shoppingList = listPicker.ChooseShoppingList(currentUser.Id);
 
         if (shoppingList == null)
         {
@@ -145,25 +150,28 @@ public class UserMenu(ConsoleUi ui, User currentUser, ApplicationContext context
         }
 
         var quantity = ui.AskNumber("Quantity");
-        var unit = selectedProduct.Unit;
 
-        ui.ShowMessage("Using unit: " + unit);
+        ui.ShowMessage("Using unit: " + selectedProduct.Unit);
 
-        var item = shoppingList.AddItem(selectedProduct.Name, quantity, unit, currentUser);
-        context.SaveChanges();
+        var item = shoppingListService.AddItem(
+            shoppingList.Id,
+            selectedProduct.Name,
+            quantity,
+            selectedProduct.Unit,
+            currentUser.Id);
 
         ui.ShowMessage("Added item: " + item.Name);
-        ui.ShowMessage("Auto category: " + item.Category.Value);
+        ui.ShowMessage("Auto category: " + item.Category);
         ShowSuggestions(item.Name);
         ui.Pause();
     }
 
-    private void CompleteItem()
+    private void CompleteItem(UserDto currentUser)
     {
         ui.Clear();
         ui.ShowTitle("COMPLETE ITEM");
 
-        var shoppingList = _listPicker.ChooseShoppingList(currentUser);
+        var shoppingList = listPicker.ChooseShoppingList(currentUser.Id);
 
         if (shoppingList == null)
         {
@@ -171,7 +179,7 @@ public class UserMenu(ConsoleUi ui, User currentUser, ApplicationContext context
             return;
         }
 
-        var item = _listPicker.ChooseItem(shoppingList);
+        var item = listPicker.ChooseItem(shoppingList);
 
         if (item == null)
         {
@@ -179,20 +187,22 @@ public class UserMenu(ConsoleUi ui, User currentUser, ApplicationContext context
             return;
         }
 
-        shoppingList.CompleteItem(item, currentUser);
-        context.SaveChanges();
+        var updatedShoppingList = shoppingListService.CompleteItem(
+            shoppingList.Id,
+            item.Id,
+            currentUser.Id);
 
         ui.ShowMessage("Completed item: " + item.Name);
-        ui.WriteProgressBar(shoppingList);
+        ui.WriteProgressBar(updatedShoppingList);
         ui.Pause();
     }
 
-    private void ShareList()
+    private void ShareList(UserDto currentUser)
     {
         ui.Clear();
         ui.ShowTitle("SHARE LIST");
 
-        var shoppingList = _listPicker.ChooseShoppingList(currentUser);
+        var shoppingList = listPicker.ChooseShoppingList(currentUser.Id);
 
         if (shoppingList == null)
         {
@@ -201,35 +211,27 @@ public class UserMenu(ConsoleUi ui, User currentUser, ApplicationContext context
         }
 
         var username = ui.AskText("Username to share with");
-        var normalizedUsername = username.Trim().ToLower();
-        var user = context.Users
-            .Include(existingUser => existingUser.Account)
-            .SingleOrDefault(existingUser => existingUser.Account.Username == normalizedUsername);
-
-        if (user == null)
-        {
-            ui.ShowWarning("User was not found.");
-            ui.Pause();
-            return;
-        }
 
         Console.WriteLine();
         ui.WriteRoleOptions();
         var role = ui.GetRoleFromOption(ui.AskNumber("Role"));
 
-        shoppingList.ShareWith(user, role, currentUser);
-        context.SaveChanges();
+        shoppingListService.Share(
+            shoppingList.Id,
+            username,
+            role,
+            currentUser.Id);
 
-        ui.ShowMessage("Shared list with " + user.Name + " as " + role + ".");
+        ui.ShowMessage("Shared list with " + username + " as " + role + ".");
         ui.Pause();
     }
 
-    private void ArchiveList()
+    private void ArchiveList(UserDto currentUser)
     {
         ui.Clear();
         ui.ShowTitle("ARCHIVE LIST");
 
-        var shoppingList = _listPicker.ChooseShoppingList(currentUser);
+        var shoppingList = listPicker.ChooseShoppingList(currentUser.Id);
 
         if (shoppingList == null)
         {
@@ -237,19 +239,20 @@ public class UserMenu(ConsoleUi ui, User currentUser, ApplicationContext context
             return;
         }
 
-        shoppingList.Archive(currentUser);
-        context.SaveChanges();
+        var archivedShoppingList = shoppingListService.Archive(
+            shoppingList.Id,
+            currentUser.Id);
 
-        ui.ShowMessage("Archived list: " + shoppingList.Name);
+        ui.ShowMessage("Archived list: " + archivedShoppingList.Name);
         ui.Pause();
     }
 
-    private void StartShoppingMission()
+    private void StartShoppingMission(UserDto currentUser)
     {
         ui.Clear();
         ui.ShowTitle("CHOOSE MISSION LIST");
 
-        var shoppingList = _listPicker.ChooseShoppingList(currentUser);
+        var shoppingList = listPicker.ChooseShoppingList(currentUser.Id);
 
         if (shoppingList == null)
         {
@@ -257,16 +260,15 @@ public class UserMenu(ConsoleUi ui, User currentUser, ApplicationContext context
             return;
         }
 
-        var shoppingModeMenu = new ShoppingModeMenu(ui, shoppingList, currentUser, context);
-        shoppingModeMenu.Show();
+        shoppingModeMenu.Show(shoppingList, currentUser);
     }
 
-    private void ShowDashboard()
+    private void ShowDashboard(UserDto currentUser)
     {
         ui.Clear();
         ui.ShowTitle("PROGRESS DASHBOARD");
 
-        var shoppingLists = _listPicker.GetShoppingListsFor(currentUser);
+        var shoppingLists = listPicker.GetShoppingListsFor(currentUser.Id);
 
         if (shoppingLists.Count == 0)
         {
@@ -285,12 +287,12 @@ public class UserMenu(ConsoleUi ui, User currentUser, ApplicationContext context
         ui.Pause();
     }
 
-    private void ShowActivityFeed()
+    private void ShowActivityFeed(UserDto currentUser)
     {
         ui.Clear();
         ui.ShowTitle("ACTIVITY FEED");
 
-        var shoppingList = _listPicker.ChooseShoppingList(currentUser);
+        var shoppingList = listPicker.ChooseShoppingList(currentUser.Id);
 
         if (shoppingList == null)
         {
@@ -320,10 +322,11 @@ public class UserMenu(ConsoleUi ui, User currentUser, ApplicationContext context
         }
     }
 
-    private ProductCatalogItem ChooseProduct()
+    private ProductDto ChooseProduct()
     {
-        var searchText = ui.AskText("Search product (example: arroz, leite, pao)");
-        var products = ProductCatalog.Search(searchText);
+        var searchText = ui.AskText(
+            "Search product (example: arroz, leite, pao)");
+        var products = productCatalogService.Search(searchText);
 
         if (products.Count == 0)
         {
@@ -336,7 +339,10 @@ public class UserMenu(ConsoleUi ui, User currentUser, ApplicationContext context
 
         for (var i = 0; i < products.Count; i++)
         {
-            Console.WriteLine((i + 1) + ". " + products[i].Name + " (" + products[i].Unit + ")");
+            Console.WriteLine(
+                (i + 1) + ". " +
+                products[i].Name +
+                " (" + products[i].Unit + ")");
         }
 
         Console.WriteLine("0. Write custom product");
@@ -349,7 +355,12 @@ public class UserMenu(ConsoleUi ui, User currentUser, ApplicationContext context
             Console.WriteLine();
             ui.WriteUnitOptions();
             var customUnit = ui.GetUnitFromOption(ui.AskNumber("Unit"));
-            return new ProductCatalogItem(customName, customUnit);
+
+            return new ProductDto
+            {
+                Name = customName,
+                Unit = customUnit
+            };
         }
 
         if (option < 1 || option > products.Count)

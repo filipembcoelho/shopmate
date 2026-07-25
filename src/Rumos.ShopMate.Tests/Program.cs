@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Rumos.ShopMate.ConsoleApp.Application;
 using Rumos.ShopMate.Data;
 using Rumos.ShopMate.Domain.Exceptions;
 using Rumos.ShopMate.Domain.Model;
 using Rumos.ShopMate.Domain.Model.Enums;
 using Rumos.ShopMate.Domain.Utils;
+using Rumos.ShopMate.Tests;
 
 var failedTests = 0;
 
@@ -29,7 +29,8 @@ ShoppingListItemRejectsInvalidUnit();
 ShoppingListItemRejectsNullCategory();
 EfModelIncludesShopMateEntities();
 SeedDataAddsInitialAggregate();
-ConsoleApplicationAcceptsContext();
+failedTests += ServiceTests.Run();
+failedTests += ConsoleDependencyTests.Run();
 
 if (failedTests > 0)
 {
@@ -557,29 +558,6 @@ void SeedDataAddsInitialAggregate()
 
         AssertTrue(context.ChangeTracker.Entries<User>().Count() >= 5, "Seed should add at least five users.");
         AssertTrue(context.ChangeTracker.Entries<ShoppingList>().Count() >= 3, "Seed should add at least three shopping lists.");
-
-        PassTest(testName);
-    }
-    catch (Exception ex)
-    {
-        FailTest(testName, ex);
-    }
-}
-
-void ConsoleApplicationAcceptsContext()
-{
-    var testName = "Console application accepts ApplicationContext";
-
-    try
-    {
-        var options = new DbContextOptionsBuilder<ApplicationContext>()
-            .UseSqlServer("Server=localhost;Database=ShopMateTests;Trusted_Connection=True;TrustServerCertificate=True;")
-            .Options;
-
-        using var context = new ApplicationContext(options);
-        var application = new ShopMateConsoleApplication(context);
-
-        AssertTrue(application != null, "Console application should keep the context it receives.");
 
         PassTest(testName);
     }

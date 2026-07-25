@@ -1,5 +1,5 @@
-using Rumos.ShopMate.Domain.Model;
 using Rumos.ShopMate.Domain.Model.Enums;
+using Rumos.ShopMate.Services.Dtos;
 
 namespace Rumos.ShopMate.ConsoleApp.Ui;
 
@@ -134,29 +134,30 @@ public class ConsoleUi
         Console.WriteLine(text);
     }
 
-    public void WriteListHeader(ShoppingList shoppingList)
+    public void WriteListHeader(ShoppingListDto shoppingList)
     {
         Console.WriteLine();
         WriteLine("+--------------------------------------+", ConsoleColor.DarkCyan);
         WriteLine("| " + shoppingList.Name, ConsoleColor.Cyan);
         WriteLine("+--------------------------------------+", ConsoleColor.DarkCyan);
-        Console.WriteLine("Owner    : " + shoppingList.Owner.Name);
+        Console.WriteLine("Owner    : " + shoppingList.Owner.FullName);
         Console.WriteLine("Archived : " + shoppingList.IsArchived);
         Console.WriteLine("Expires  : " + shoppingList.ExpireDate.ToShortDateString());
     }
 
-    public void WriteMembers(ShoppingList shoppingList)
+    public void WriteMembers(ShoppingListDto shoppingList)
     {
         Console.WriteLine();
         WriteLine("Members", ConsoleColor.Yellow);
 
-        foreach (ShoppingListMember member in shoppingList.Members)
+        foreach (var member in shoppingList.Members)
         {
-            Console.WriteLine("- " + member.User.Name + " [" + member.Role + "]");
+            Console.WriteLine(
+                "- " + member.FullName + " [" + member.Role + "]");
         }
     }
 
-    public void WriteItems(ShoppingList shoppingList)
+    public void WriteItems(ShoppingListDto shoppingList)
     {
         Console.WriteLine();
         WriteLine("Items", ConsoleColor.Yellow);
@@ -187,9 +188,9 @@ public class ConsoleUi
         }
     }
 
-    public void WriteProgressBar(ShoppingList shoppingList)
+    public void WriteProgressBar(ShoppingListDto shoppingList)
     {
-        var progress = shoppingList.GetProgressPercentage();
+        var progress = shoppingList.ProgressPercentage;
         var filledBlocks = progress / 10;
         var bar = "";
 
@@ -208,10 +209,13 @@ public class ConsoleUi
         Write("[", ConsoleColor.DarkGray);
         Write(bar, ConsoleColor.Green);
         Write("] ", ConsoleColor.DarkGray);
-        Console.WriteLine(progress + "% (" + shoppingList.CountCompletedItems() + "/" + shoppingList.Items.Count + ")");
+        Console.WriteLine(
+            progress + "% (" +
+            shoppingList.CompletedItems + "/" +
+            shoppingList.Items.Count + ")");
     }
 
-    public void WriteActivities(ShoppingList shoppingList)
+    public void WriteActivities(ShoppingListDto shoppingList)
     {
         if (shoppingList.Activities.Count == 0)
         {
@@ -320,13 +324,13 @@ public class ConsoleUi
         Console.ForegroundColor = originalColor;
     }
 
-    private string GetCategoryName(ShoppingListItem item)
+    private string GetCategoryName(ShoppingListItemDto item)
     {
-        if (item.Category == null)
+        if (string.IsNullOrWhiteSpace(item.Category))
         {
             return "Other";
         }
 
-        return item.Category.Value;
+        return item.Category;
     }
 }

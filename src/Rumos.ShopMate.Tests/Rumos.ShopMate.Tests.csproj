@@ -1,9 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\Rumos.ShopMate.ConsoleApp\Rumos.ShopMate.ConsoleApp.csproj" />
     <ProjectReference Include="..\Rumos.ShopMate.Domain\Rumos.ShopMate.Domain.csproj" />
     <ProjectReference Include="..\Rumos.ShopMate.Data\Rumos.ShopMate.Data.csproj" />
+    <ProjectReference Include="..\Rumos.ShopMate.Services\Rumos.ShopMate.Services.csproj" />
+    <ProjectReference Include="..\Rumos.ShopMate.ConsoleApp\Rumos.ShopMate.ConsoleApp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.10" />
   </ItemGroup>
 
   <PropertyGroup>
