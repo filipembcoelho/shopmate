@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rumos.ShopMate.ConsoleApp.Application;
 using Rumos.ShopMate.ConsoleApp.Components;
@@ -8,9 +9,25 @@ using Rumos.ShopMate.Data;
 using Rumos.ShopMate.Services.Implementations;
 using Rumos.ShopMate.Services.Interfaces;
 
+
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(AppContext.BaseDirectory)
+    .AddJsonFile("appsettings.json")
+    .Build();
+
+var cs = configuration.GetConnectionString("ShopMate");
+
+if (string.IsNullOrEmpty(cs))
+{
+    throw new ArgumentException("Connection string 'ShopMate' not found in appsettings.json.");
+}
+
 var services = new ServiceCollection();
 
-services.AddDbContext<ApplicationContext>();
+services.AddDbContext<ApplicationContext>(options =>
+{
+    options.UseSqlServer(cs);
+});
 
 // Services
 services.AddScoped<IUserService, UserService>();
