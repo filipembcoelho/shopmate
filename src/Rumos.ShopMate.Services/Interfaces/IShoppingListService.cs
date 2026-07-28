@@ -21,4 +21,7 @@ public interface IShoppingListService
         ShoppingListRole role,
         int userId);
     ShoppingListDto Archive(int shoppingListId, int userId);
+
+    // TODO: Add an update operation when we implement PUT in the API.
+    // TODO: Decide whether DELETE should remove a list or archive it.
 }

@@ -6,6 +6,7 @@ using Rumos.ShopMate.ConsoleApp.Components;
 using Rumos.ShopMate.ConsoleApp.Menus;
 using Rumos.ShopMate.ConsoleApp.Ui;
 using Rumos.ShopMate.Data;
+using Rumos.ShopMate.IoC;
 using Rumos.ShopMate.Services.Implementations;
 using Rumos.ShopMate.Services.Interfaces;
 
@@ -15,25 +16,10 @@ var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
     .Build();
 
-var cs = configuration.GetConnectionString("ShopMate");
-
-if (string.IsNullOrEmpty(cs))
-{
-    throw new ArgumentException("Connection string 'ShopMate' not found in appsettings.json.");
-}
-
 var services = new ServiceCollection();
 
-services.AddDbContext<ApplicationContext>(options =>
-{
-    options.UseSqlServer(cs);
-});
-
 // Services
-services.AddScoped<IUserService, UserService>();
-services.AddScoped<IAuthenticationService, AuthenticationService>();
-services.AddScoped<IProductCatalogService, ProductCatalogService>();
-services.AddScoped<IShoppingListService, ShoppingListService>();
+services.AddShopMateServices(configuration);
 
 // UI
 services.AddScoped<MainMenu>();

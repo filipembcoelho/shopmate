@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Rumos.ShopMate.Data\Rumos.ShopMate.Data.csproj" />
+      <ProjectReference Include="..\Rumos.ShopMate.IoC\Rumos.ShopMate.IoC.csproj" />
       <ProjectReference Include="..\Rumos.ShopMate.Services\Rumos.ShopMate.Services.csproj" />
     </ItemGroup>
 
