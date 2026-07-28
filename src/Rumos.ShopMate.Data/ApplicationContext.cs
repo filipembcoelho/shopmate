@@ -1,12 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using Rumos.ShopMate.Data.Configurations;
 using Rumos.ShopMate.Domain.Model;
 
 namespace Rumos.ShopMate.Data;
 
 public class ApplicationContext : DbContext
 {
-    private const string ConnectionStringVariableName = "ConnectionStrings__ShopMate";
+    private const string ConnectionStringVariableName = "Server=94.46.180.24;Database=ShopMate;User Id=shopmate;Password=O3!ybtOOcr0drg2&;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;";
 
     public DbSet<User> Users { get; set; }
     public DbSet<Account> Accounts { get; set; }
@@ -32,16 +31,14 @@ public class ApplicationContext : DbContext
             return;
         }
 
-        var connectionString =
-            Environment.GetEnvironmentVariable(ConnectionStringVariableName);
-
-        if (string.IsNullOrWhiteSpace(connectionString))
+        
+        if (string.IsNullOrWhiteSpace(ConnectionStringVariableName))
         {
             throw new InvalidOperationException(
                 "The ShopMate connection string was not configured.");
         }
 
-        optionsBuilder.UseSqlServer(connectionString);
+        optionsBuilder.UseSqlServer(ConnectionStringVariableName);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

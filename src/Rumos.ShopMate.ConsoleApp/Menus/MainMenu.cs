@@ -8,8 +8,8 @@ namespace Rumos.ShopMate.ConsoleApp.Menus;
 
 public class MainMenu(
     ConsoleUi ui,
-    IAuthenticationService authenticationService,
-    IUserService userService,
+    IAuthenticationService authenticationService, // new AuthenticationService()
+    IUserService userService, // new UserService(context)
     UserMenu userMenu)
 {
     public void Show()

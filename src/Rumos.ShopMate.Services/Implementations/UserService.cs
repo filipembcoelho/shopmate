@@ -8,7 +8,7 @@ using Rumos.ShopMate.Services.Mappers;
 
 namespace Rumos.ShopMate.Services.Implementations;
 
-public class UserService(ApplicationContext context) : IUserService
+public class UserService(ApplicationContext context) : IUserService // new ApplciationContext();
 {
     public string SuggestUsername(string fullName)
     {
