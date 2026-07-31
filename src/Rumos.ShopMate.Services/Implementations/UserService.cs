@@ -39,6 +39,11 @@ public class UserService(ApplicationContext context) : IUserService // new Applc
             .SingleOrDefault(existingUser =>
                 existingUser.Account.Username == normalizedUsername);
 
+        if (user is null)
+        {
+            throw new ServiceNotFoundException("User not found.");
+        }
+        
         return user == null ? null : DtoMapper.ToDto(user);
     }
 }

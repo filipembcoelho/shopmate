@@ -7,10 +7,19 @@
       "launchBrowser": false,
       "applicationUrl": "http://localhost:5297",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Quality"
       }
     },
     "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "https://localhost:7027;http://localhost:5297",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "acd": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,
