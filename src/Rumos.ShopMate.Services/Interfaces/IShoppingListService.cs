@@ -7,7 +7,7 @@ public interface IShoppingListService
 {
     IReadOnlyList<ShoppingListDto> GetForUser(int userId);
     ShoppingListDto GetById(int shoppingListId, int userId);
-    ShoppingListDto Create(string name, int ownerId);
+    ShoppingListDto Create(CreateShoppingListDto shoppingListDto);
     ShoppingListItemDto AddItem(
         int shoppingListId,
         string name,

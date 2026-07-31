@@ -51,21 +51,21 @@ public class ShoppingListService(ApplicationContext context) : IShoppingListServ
         return DtoMapper.ToDto(shoppingList);
     }
 
-    public ShoppingListDto Create(string name, int ownerId)
+    public ShoppingListDto Create(CreateShoppingListDto  shoppingListDto)
     {
-        ValidateRequired(name, "Shopping list name is required.");
-        ValidatePositiveId(ownerId, "Owner ID must be greater than zero.");
+        ValidateRequired(shoppingListDto.Name, "Shopping list name is required.");
+        ValidatePositiveId(shoppingListDto.OwnerId, "Owner ID must be greater than zero.");
 
         var owner = context.Users
             .Include(user => user.Account)
-            .SingleOrDefault(user => user.Id == ownerId);
+            .SingleOrDefault(user => user.Id == shoppingListDto.OwnerId);
 
         if (owner == null)
         {
             throw new ServiceException("Owner was not found.");
         }
 
-        var shoppingList = new ShoppingList(name, owner);
+        var shoppingList = new ShoppingList(shoppingListDto.Name, owner);
 
         context.ShoppingLists.Add(shoppingList);
         context.SaveChanges();
