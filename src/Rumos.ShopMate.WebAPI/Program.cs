@@ -17,6 +17,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// TODO: Configure CORS when the Angular application
+// starts calling this API from a different origin.
 app.MapControllers();
 
 app.Run();

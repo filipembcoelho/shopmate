@@ -1,6 +1,103 @@
-@Rumos.ShopMate.WebAPI_HostAddress = http://localhost:5297
+@host = http://localhost:5297
+@userId = 1
+@listId = 1
+@itemId = 1
+@memberUserId = 2
 
-GET {{Rumos.ShopMate.WebAPI_HostAddress}}/weatherforecast/
-Accept: application/json
+### Login
+POST {{host}}/api/auth/login
+Content-Type: application/json
 
-###
+{
+  "username": "student",
+  "password": "Classroom1!"
+}
+
+### Register
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "fullName": "Angular Student",
+  "username": "angularstudent",
+  "password": "Classroom1!"
+}
+
+### Suggest username
+GET {{host}}/api/users/suggest-username?fullName=Angular%20Student
+
+### Find user
+GET {{host}}/api/users/angularstudent
+
+### Search products
+GET {{host}}/api/products?searchText=milk
+
+### Get active shopping lists
+GET {{host}}/api/shopping-lists?userId={{userId}}
+
+### Get one shopping list
+GET {{host}}/api/shopping-lists/{{listId}}?userId={{userId}}
+
+### Create shopping list
+POST {{host}}/api/shopping-lists
+Content-Type: application/json
+
+{
+  "name": "Angular course groceries",
+  "ownerId": {{userId}}
+}
+
+### Rename shopping list
+PUT {{host}}/api/shopping-lists/{{listId}}?userId={{userId}}
+Content-Type: application/json
+
+{
+  "name": "Updated Angular groceries"
+}
+
+### Add item
+POST {{host}}/api/shopping-lists/{{listId}}/items?userId={{userId}}
+Content-Type: application/json
+
+{
+  "name": "Milk",
+  "quantity": 2,
+  "unit": 4
+}
+
+### Replace item state
+PUT {{host}}/api/shopping-lists/{{listId}}/items/{{itemId}}?userId={{userId}}
+Content-Type: application/json
+
+{
+  "name": "Oat milk",
+  "quantity": 3,
+  "unit": 10,
+  "isCompleted": true
+}
+
+### Remove item
+DELETE {{host}}/api/shopping-lists/{{listId}}/items/{{itemId}}?userId={{userId}}
+
+### Share shopping list
+POST {{host}}/api/shopping-lists/{{listId}}/members?userId={{userId}}
+Content-Type: application/json
+
+{
+  "username": "angularstudent",
+  "role": 2
+}
+
+### Change member role
+PUT {{host}}/api/shopping-lists/{{listId}}/members/{{memberUserId}}?userId={{userId}}
+Content-Type: application/json
+
+{
+  "role": 3
+}
+
+### Remove member
+DELETE {{host}}/api/shopping-lists/{{listId}}/members/{{memberUserId}}?userId={{userId}}
+
+### Archive shopping list
+DELETE {{host}}/api/shopping-lists/{{listId}}?userId={{userId}}

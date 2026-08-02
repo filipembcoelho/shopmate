@@ -61,13 +61,6 @@ public class MainMenu(
             var password = ui.AskPassword("Password");
             var user = authenticationService.Login(username, password);
 
-            if (user == null)
-            {
-                ui.ShowError("Invalid username or password.");
-                ui.Pause();
-                return;
-            }
-
             ui.ShowMessage("Welcome, " + user.FullName + ".");
             ui.Pause();
 

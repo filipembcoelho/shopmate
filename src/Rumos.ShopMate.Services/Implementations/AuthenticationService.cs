@@ -10,7 +10,7 @@ namespace Rumos.ShopMate.Services.Implementations;
 
 public class AuthenticationService(ApplicationContext context) : IAuthenticationService
 {
-    public UserDto? Login(string username, string password)
+    public UserDto Login(string username, string password)
     {
         ValidateRequired(username, "Username is required.");
         ValidateRequired(password, "Password is required.");
@@ -23,7 +23,12 @@ public class AuthenticationService(ApplicationContext context) : IAuthentication
                 existingUser.Account.Username == normalizedUsername &&
                 existingUser.Account.Password == password);
 
-        return user == null ? null : DtoMapper.ToDto(user);
+        if (user == null)
+        {
+            throw new InvalidCredentialsException("Invalid username or password.");
+        }
+
+        return DtoMapper.ToDto(user);
     }
 
     public UserDto Register(RegisterUserDto userDto)

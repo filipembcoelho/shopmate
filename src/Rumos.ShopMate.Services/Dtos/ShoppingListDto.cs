@@ -14,10 +14,3 @@ public class ShoppingListDto
     public int PendingItems { get; set; }
     public int ProgressPercentage { get; set; }
 }
-
-
-public class CreateShoppingListDto
-{
-    public string Name { get; set; }
-    public int OwnerId { get; set; }
-}

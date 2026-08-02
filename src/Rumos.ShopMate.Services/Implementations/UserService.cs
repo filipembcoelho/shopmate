@@ -25,7 +25,7 @@ public class UserService(ApplicationContext context) : IUserService // new Applc
         return UsernameUtils.SuggestUsername(fullName, users);
     }
 
-    public UserDto? GetByUsername(string username)
+    public UserDto GetByUsername(string username)
     {
         if (string.IsNullOrWhiteSpace(username))
         {
@@ -43,7 +43,7 @@ public class UserService(ApplicationContext context) : IUserService // new Applc
         {
             throw new ServiceNotFoundException("User not found.");
         }
-        
-        return user == null ? null : DtoMapper.ToDto(user);
+
+        return DtoMapper.ToDto(user);
     }
 }

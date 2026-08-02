@@ -122,7 +122,11 @@ public class UserMenu(
         ui.ShowTitle("CREATE SHOPPING LIST");
 
         var name = ui.AskText("List name");
-        var shoppingList = shoppingListService.Create(name, currentUser.Id);
+        var shoppingList = shoppingListService.Create(new CreateShoppingListDto
+        {
+            Name = name,
+            OwnerId = currentUser.Id
+        });
 
         ui.ShowMessage("Created list: " + shoppingList.Name);
         ui.Pause();

@@ -27,6 +27,7 @@ public static class ServiceTests
         RunTest(SuggestUsernameUsesExistingUsers, "Suggest username uses existing users");
         RunTest(SuggestUsernameValidatesFullName, "Suggest username validates full name");
         RunTest(GetByUsernameReturnsASafeUserDto, "Get by username returns a safe user DTO");
+        RunTest(GetByUsernameRejectsAnUnknownUser, "Get by username rejects an unknown user");
         RunTest(GetForUserMapsTheFullShoppingList, "Get for user maps the full shopping list");
         RunTest(GetForUserValidatesUserId, "Get for user validates user ID");
         RunTest(GetByIdReturnsAVisibleShoppingList, "Get by ID returns a visible shopping list");
@@ -38,9 +39,29 @@ public static class ServiceTests
         RunTest(AddItemValidatesUnit, "Add item validates unit");
         RunTest(CompleteItemPersistsCompletion, "Complete item persists completion");
         RunTest(CompleteItemRejectsAnUnknownItem, "Complete item rejects an unknown item");
+        RunTest(UpdateItemValidatesRequiredName, "Update item validates required name");
+        RunTest(UpdateItemValidatesQuantity, "Update item validates quantity");
+        RunTest(UpdateItemValidatesUnit, "Update item validates unit");
+        RunTest(UpdateItemRejectsAnInvalidItemId, "Update item rejects an invalid item ID");
+        RunTest(UpdateItemRejectsAnUnknownItem, "Update item rejects an unknown item");
+        RunTest(
+            UpdateItemPersistsTheCompleteEditableState,
+            "Update item persists the complete editable state");
+        RunTest(
+            UpdateItemSkipsUnchangedDomainOperations,
+            "Update item skips unchanged domain operations");
+        RunTest(RemoveItemPersistsTheRemoval, "Remove item persists the removal");
+        RunTest(RemoveItemRejectsAnInvalidItemId, "Remove item rejects an invalid item ID");
+        RunTest(RemoveItemRejectsAnUnknownItem, "Remove item rejects an unknown item");
         RunTest(ShareAddsTheRequestedMember, "Share adds the requested member");
         RunTest(ShareValidatesRole, "Share validates role");
+        RunTest(
+            ChangeMemberRolePersistsTheNewRole,
+            "Change member role persists the new role");
+        RunTest(RemoveMemberPersistsTheRemoval, "Remove member persists the removal");
         RunTest(ArchivePersistsTheArchivedState, "Archive persists the archived state");
+        RunTest(RenameShoppingListPersistsTheNewName, "Rename shopping list persists the new name");
+        RunTest(ArchivedShoppingListsAreHidden, "Archived shopping lists are hidden");
         RunTest(ProductSearchReturnsProductDtos, "Product search returns product DTOs");
         RunTest(ProductSearchValidatesSearchText, "Product search validates search text");
         RunTest(MissingConnectionStringIsRejected, "Missing connection string is rejected");
@@ -77,9 +98,7 @@ public static class ServiceTests
         context.SaveChanges();
         var service = new AuthenticationService(context);
 
-        var result = service.Login(" TESTUSER ", "Testing1!");
-
-        var userDto = AssertNotNull(result, "Login should return the matching user.");
+        var userDto = service.Login(" TESTUSER ", "Testing1!");
         AssertEqual(user.Id, userDto.Id, "Login should return the persisted user ID.");
         AssertEqual("Test User", userDto.FullName, "Login should return the full name.");
         AssertEqual("testuser", userDto.Username, "Login should return the normalized username.");
@@ -93,9 +112,9 @@ public static class ServiceTests
         context.SaveChanges();
         var service = new AuthenticationService(context);
 
-        var result = service.Login("testuser", "Wrong1!");
-
-        AssertTrue(result == null, "Login should return null for invalid credentials.");
+        AssertInvalidCredentialsException(
+            () => service.Login("testuser", "Wrong1!"),
+            "Invalid username or password.");
     }
 
     private static void LoginValidatesRequiredUsername()
@@ -191,12 +210,20 @@ public static class ServiceTests
         context.SaveChanges();
         var service = new UserService(context);
 
-        var result = service.GetByUsername(" TESTUSER ");
-
-        var userDto = AssertNotNull(result, "The normalized username should find the user.");
+        var userDto = service.GetByUsername(" TESTUSER ");
         AssertEqual(user.Id, userDto.Id, "The lookup should return the persisted user ID.");
         AssertEqual("Test User", userDto.FullName, "The lookup should return the full name.");
         AssertEqual("testuser", userDto.Username, "The lookup should return the normalized username.");
+    }
+
+    private static void GetByUsernameRejectsAnUnknownUser()
+    {
+        using var context = CreateContext();
+        var service = new UserService(context);
+
+        AssertServiceNotFoundException(
+            () => service.GetByUsername("missing"),
+            "User not found.");
     }
 
     private static void GetForUserMapsTheFullShoppingList()
@@ -251,7 +278,7 @@ public static class ServiceTests
         context.SaveChanges();
         var service = new ShoppingListService(context);
 
-        AssertServiceException(
+        AssertServiceNotFoundException(
             () => service.GetById(data.ShoppingListId, outsider.Id),
             "Shopping list was not found.");
     }
@@ -264,7 +291,11 @@ public static class ServiceTests
         context.SaveChanges();
         var service = new ShoppingListService(context);
 
-        var result = service.Create("Weekend groceries", owner.Id);
+        var result = service.Create(new CreateShoppingListDto
+        {
+            Name = "Weekend groceries",
+            OwnerId = owner.Id
+        });
 
         AssertTrue(result.Id > 0, "The new list should receive an ID.");
         AssertEqual("Weekend groceries", result.Name, "The new list should keep its name.");
@@ -277,8 +308,12 @@ public static class ServiceTests
         using var context = CreateContext();
         var service = new ShoppingListService(context);
 
-        AssertServiceException(
-            () => service.Create("Weekend groceries", 999),
+        AssertServiceNotFoundException(
+            () => service.Create(new CreateShoppingListDto
+            {
+                Name = "Weekend groceries",
+                OwnerId = 999
+            }),
             "Owner was not found.");
     }
 
@@ -345,8 +380,192 @@ public static class ServiceTests
         using var context = CreateContext(data.DatabaseName);
         var service = new ShoppingListService(context);
 
-        AssertServiceException(
+        AssertServiceNotFoundException(
             () => service.CompleteItem(data.ShoppingListId, 999, data.OwnerId),
+            "Shopping list item was not found.");
+    }
+
+    private static void UpdateItemValidatesRequiredName()
+    {
+        var data = CreateSharedShoppingList();
+        using var context = CreateContext(data.DatabaseName);
+        var service = new ShoppingListService(context);
+
+        AssertServiceException(
+            () => service.UpdateItem(
+                data.ShoppingListId,
+                data.ItemId,
+                new UpdateShoppingListItemDto
+                {
+                    Name = " ",
+                    Quantity = 1,
+                    Unit = Unit.Liter,
+                    IsCompleted = false
+                },
+                data.OwnerId),
+            "Item name is required.");
+    }
+
+    private static void UpdateItemValidatesQuantity()
+    {
+        var data = CreateSharedShoppingList();
+        using var context = CreateContext(data.DatabaseName);
+        var service = new ShoppingListService(context);
+
+        AssertServiceException(
+            () => service.UpdateItem(
+                data.ShoppingListId,
+                data.ItemId,
+                new UpdateShoppingListItemDto
+                {
+                    Name = "Milk",
+                    Quantity = 0,
+                    Unit = Unit.Liter,
+                    IsCompleted = false
+                },
+                data.OwnerId),
+            "Quantity must be greater than zero.");
+    }
+
+    private static void UpdateItemValidatesUnit()
+    {
+        var data = CreateSharedShoppingList();
+        using var context = CreateContext(data.DatabaseName);
+        var service = new ShoppingListService(context);
+
+        AssertServiceException(
+            () => service.UpdateItem(
+                data.ShoppingListId,
+                data.ItemId,
+                new UpdateShoppingListItemDto
+                {
+                    Name = "Milk",
+                    Quantity = 1,
+                    Unit = (Unit)999,
+                    IsCompleted = false
+                },
+                data.OwnerId),
+            "Unit is invalid.");
+    }
+
+    private static void UpdateItemRejectsAnInvalidItemId()
+    {
+        var data = CreateSharedShoppingList();
+        using var context = CreateContext(data.DatabaseName);
+        var service = new ShoppingListService(context);
+
+        AssertServiceException(
+            () => service.UpdateItem(
+                data.ShoppingListId,
+                0,
+                new UpdateShoppingListItemDto
+                {
+                    Name = "Milk",
+                    Quantity = 1,
+                    Unit = Unit.Liter,
+                    IsCompleted = false
+                },
+                data.OwnerId),
+            "Shopping list item ID must be greater than zero.");
+    }
+
+    private static void UpdateItemRejectsAnUnknownItem()
+    {
+        var data = CreateSharedShoppingList();
+        using var context = CreateContext(data.DatabaseName);
+        var service = new ShoppingListService(context);
+
+        AssertServiceNotFoundException(
+            () => service.UpdateItem(
+                data.ShoppingListId,
+                999,
+                new UpdateShoppingListItemDto
+                {
+                    Name = "Milk",
+                    Quantity = 1,
+                    Unit = Unit.Liter,
+                    IsCompleted = false
+                },
+                data.OwnerId),
+            "Shopping list item was not found.");
+    }
+
+    private static void UpdateItemPersistsTheCompleteEditableState()
+    {
+        var data = CreateSharedShoppingList();
+        using var context = CreateContext(data.DatabaseName);
+        var service = new ShoppingListService(context);
+
+        var result = service.UpdateItem(
+            data.ShoppingListId,
+            data.ItemId,
+            new UpdateShoppingListItemDto
+            {
+                Name = "Oat milk",
+                Quantity = 3,
+                Unit = Unit.Bottle,
+                IsCompleted = true
+            },
+            data.OwnerId);
+
+        AssertEqual("Oat milk", result.Name, "The item name should be updated.");
+        AssertEqual(3, result.Quantity, "The item quantity should be updated.");
+        AssertEqual(Unit.Bottle.ToString(), result.Unit.ToString(), "The unit should be updated.");
+        AssertTrue(result.IsCompleted, "The item should be completed.");
+    }
+
+    private static void UpdateItemSkipsUnchangedDomainOperations()
+    {
+        var data = CreateSharedShoppingList();
+        using var context = CreateContext(data.DatabaseName);
+        var service = new ShoppingListService(context);
+        var activityCount = context.Activities.Count();
+
+        service.UpdateItem(
+            data.ShoppingListId,
+            data.ItemId,
+            new UpdateShoppingListItemDto
+            {
+                Name = "Milk",
+                Quantity = 1,
+                Unit = Unit.Liter,
+                IsCompleted = false
+            },
+            data.OwnerId);
+
+        AssertEqual(activityCount, context.Activities.Count(), "Unchanged PUT values should not add activity.");
+    }
+
+    private static void RemoveItemPersistsTheRemoval()
+    {
+        var data = CreateSharedShoppingList();
+        using var context = CreateContext(data.DatabaseName);
+        var service = new ShoppingListService(context);
+
+        service.RemoveItem(data.ShoppingListId, data.ItemId, data.OwnerId);
+
+        AssertEqual(0, context.ShoppingListItems.Count(), "DELETE should remove the item row.");
+    }
+
+    private static void RemoveItemRejectsAnInvalidItemId()
+    {
+        var data = CreateSharedShoppingList();
+        using var context = CreateContext(data.DatabaseName);
+        var service = new ShoppingListService(context);
+
+        AssertServiceException(
+            () => service.RemoveItem(data.ShoppingListId, 0, data.OwnerId),
+            "Shopping list item ID must be greater than zero.");
+    }
+
+    private static void RemoveItemRejectsAnUnknownItem()
+    {
+        var data = CreateSharedShoppingList();
+        using var context = CreateContext(data.DatabaseName);
+        var service = new ShoppingListService(context);
+
+        AssertServiceNotFoundException(
+            () => service.RemoveItem(data.ShoppingListId, 999, data.OwnerId),
             "Shopping list item was not found.");
     }
 
@@ -383,6 +602,33 @@ public static class ServiceTests
             "Shopping list role is invalid.");
     }
 
+    private static void ChangeMemberRolePersistsTheNewRole()
+    {
+        var data = CreateSharedShoppingList();
+        using var context = CreateContext(data.DatabaseName);
+        var service = new ShoppingListService(context);
+
+        var result = service.ChangeMemberRole(
+            data.ShoppingListId,
+            data.MemberId,
+            new UpdateShoppingListMemberDto { Role = ShoppingListRole.Viewer },
+            data.OwnerId);
+
+        var member = result.Members.Single(item => item.UserId == data.MemberId);
+        AssertEqual(ShoppingListRole.Viewer.ToString(), member.Role.ToString(), "PUT should persist the role.");
+    }
+
+    private static void RemoveMemberPersistsTheRemoval()
+    {
+        var data = CreateSharedShoppingList();
+        using var context = CreateContext(data.DatabaseName);
+        var service = new ShoppingListService(context);
+
+        service.RemoveMember(data.ShoppingListId, data.MemberId, data.OwnerId);
+
+        AssertEqual(1, context.ShoppingListMembers.Count(), "Only the owner membership should remain.");
+    }
+
     private static void ArchivePersistsTheArchivedState()
     {
         var data = CreateEmptyShoppingList();
@@ -393,6 +639,45 @@ public static class ServiceTests
 
         AssertTrue(result.IsArchived, "The returned DTO should be archived.");
         AssertTrue(context.ShoppingLists.Single().IsArchived, "The archived state should be persisted.");
+    }
+
+    private static void RenameShoppingListPersistsTheNewName()
+    {
+        var data = CreateEmptyShoppingList();
+        using var context = CreateContext(data.DatabaseName);
+        var service = new ShoppingListService(context);
+
+        var result = service.Rename(
+            data.ShoppingListId,
+            new UpdateShoppingListDto { Name = "Monthly groceries" },
+            data.OwnerId);
+
+        AssertEqual("Monthly groceries", result.Name, "PUT should return the renamed list.");
+        AssertEqual(
+            "Monthly groceries",
+            context.ShoppingLists.Single().Name,
+            "The renamed list should be persisted.");
+    }
+
+    private static void ArchivedShoppingListsAreHidden()
+    {
+        var data = CreateEmptyShoppingList();
+        using var context = CreateContext(data.DatabaseName);
+        var service = new ShoppingListService(context);
+
+        service.Archive(data.ShoppingListId, data.OwnerId);
+
+        AssertEqual(1, context.ShoppingLists.Count(), "Soft delete must preserve the row.");
+        AssertEqual(0, service.GetForUser(data.OwnerId).Count, "Archived lists should be hidden.");
+        AssertServiceNotFoundException(
+            () => service.GetById(data.ShoppingListId, data.OwnerId),
+            "Shopping list was not found.");
+        AssertServiceNotFoundException(
+            () => service.Rename(
+                data.ShoppingListId,
+                new UpdateShoppingListDto { Name = "Hidden list" },
+                data.OwnerId),
+            "Shopping list was not found.");
     }
 
     private static void ProductSearchReturnsProductDtos()
@@ -555,6 +840,44 @@ public static class ServiceTests
         AssertTrue(exceptionWasThrown, "Expected ServiceException.");
     }
 
+    private static void AssertInvalidCredentialsException(
+        Action action,
+        string expectedMessage)
+    {
+        var exceptionWasThrown = false;
+
+        try
+        {
+            action();
+        }
+        catch (InvalidCredentialsException ex)
+        {
+            exceptionWasThrown = true;
+            AssertEqual(expectedMessage, ex.Message, "The login failure should be explained.");
+        }
+
+        AssertTrue(exceptionWasThrown, "Expected InvalidCredentialsException.");
+    }
+
+    private static void AssertServiceNotFoundException(
+        Action action,
+        string expectedMessage)
+    {
+        var exceptionWasThrown = false;
+
+        try
+        {
+            action();
+        }
+        catch (ServiceNotFoundException ex)
+        {
+            exceptionWasThrown = true;
+            AssertEqual(expectedMessage, ex.Message, "The missing resource should be explained.");
+        }
+
+        AssertTrue(exceptionWasThrown, "Expected ServiceNotFoundException.");
+    }
+
     private static void AssertEqual(int expected, int actual, string message)
     {
         if (expected != actual)
@@ -569,17 +892,6 @@ public static class ServiceTests
         {
             throw new Exception(message + " Expected: " + expected + " Actual: " + actual);
         }
-    }
-
-    private static T AssertNotNull<T>(T? value, string message)
-        where T : class
-    {
-        if (value == null)
-        {
-            throw new Exception(message);
-        }
-
-        return value;
     }
 
     private static void AssertTrue(bool condition, string message)
