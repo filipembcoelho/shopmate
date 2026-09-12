@@ -1,59 +1,157 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="title" content="Shop Mate" />
-    <meta
-      name="description"
-      content="Shop Mate is a web application that helps users manage their shopping lists and find the best deals on products."
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Shop Mate</title>
-
-    <link rel="stylesheet" href="styles.css" />
-    <style>
-      /* Embedded styles */
-    </style>
+    <meta charset="UTF-8">
+    <meta name="description" content="ShopMate helps you organise simple shopping lists.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopMate | Home</title>
+    <link rel="stylesheet" href="styles.css">
   </head>
+
   <body>
-    <header>
-      <h1 id="title">ShopMate</h1>
-      <p>Build and manage a <strong>simple</strong> shopping list</p>
+    <header class="site-header" id="top">
+      <div class="navbar">
+        <a class="logo" href="index.html">
+          <span class="logo-mark">S</span>
+          <span>ShopMate</span>
+        </a>
+
+        <nav aria-label="Main navigation">
+          <ul class="nav-list">
+            <li><a class="nav-link current" href="index.html">Home</a></li>
+            <li><a class="nav-link" href="lists.html">My Lists</a></li>
+            <li><a class="nav-link" href="about.html">About</a></li>
+            <li><a class="nav-link" href="contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
     </header>
 
     <main>
-      <section>
-        <h2 id="shopping-list">Shopping List</h2>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Plan less. Enjoy more.</p>
+          <h1>Shopping made <span class="highlight">beautifully simple.</span></h1>
+          <p class="hero-text">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Keep every item in one
+            <strong>clear</strong> place and make every trip feel <em>effortless</em>.
+          </p>
 
-        <ul>
-          <li class="shopping-item">Milk</li>
-          <li class="shopping-item">Bread</li>
-          <li class="shopping-item">Eggs</li>
-        </ul>
+          <div class="button-group">
+            <a class="button primary-button" href="lists.html">Create a list</a>
+            <a class="button outline-button" href="#features">Explore features</a>
+          </div>
+        </div>
+
+        <article class="preview-card">
+          <div class="preview-heading">
+            <div>
+              <p class="small-label">Saturday morning</p>
+              <h2 class="preview-title">Weekly groceries</h2>
+            </div>
+            <span class="item-count">5 items</span>
+          </div>
+
+          <ul class="preview-list">
+            <li class="preview-item"><span>◯ &nbsp;Fresh bread</span><strong>1</strong></li>
+            <li class="preview-item"><span>◯ &nbsp;Green apples</span><strong>6</strong></li>
+            <li class="preview-item"><span>◯ &nbsp;Oat milk</span><strong>2</strong></li>
+            <li class="preview-item"><span>◯ &nbsp;Cherry tomatoes</span><strong>1 box</strong></li>
+          </ul>
+
+          <p class="preview-note">One item left to choose</p>
+        </article>
       </section>
 
-      <section>
-        <h2>Add an Item</h2>
+      <section class="content-section" id="features">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Everything in its place</p>
+            <h2>A calmer way to shop</h2>
+          </div>
+          <p class="section-description">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vitae justo sed
+            sapien facilisis volutpat.
+          </p>
+        </div>
 
-        <ul>
-          <li>Milk</li>
-          <li>Bread</li>
-          <li>Eggs</li>
-        </ul>
+        <div class="card-grid">
+          <article class="feature-card coral-card">
+            <span class="card-number">01</span>
+            <h3>Plan together</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed felis.</p>
+            <a class="feature-link light-link" href="about.html">Learn more &rarr;</a>
+          </article>
 
-        <form>
-          <label for="item-name">Item Name:</label>
-          <input type="text" id="item-name" name="item-name" placeholder="example: Milk" required />
+          <article class="feature-card yellow-card">
+            <span class="card-number">02</span>
+            <h3>Stay organised</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed felis.</p>
+            <a class="feature-link" href="lists.html">View lists &rarr;</a>
+          </article>
 
-          <!-- <input type="submit" value="Add Item" /> -->
-          <button type="submit" id="submit">Submit</button>
-        </form>
+          <article class="feature-card green-card">
+            <span class="card-number">03</span>
+            <h3>Shop with ease</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed felis.</p>
+            <a class="feature-link" href="contact.html">Get in touch &rarr;</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="content-section split-section">
+        <div>
+          <p class="eyebrow">A simple routine</p>
+          <h2>Three small steps. One happy trolley.</h2>
+          <p class="muted-text">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed posuere, lorem vel
+            feugiat viverra, nisl neque interdum velit.
+          </p>
+
+          <ul class="check-list">
+            <li class="check-item">✓ &nbsp;<strong>Create</strong> a list for your next visit.</li>
+            <li class="check-item">✓ &nbsp;<strong>Add</strong> the things you need.</li>
+            <li class="check-item">✓ &nbsp;<strong>Check</strong> each item while you shop.</li>
+          </ul>
+        </div>
+
+        <aside class="quote-card">
+          <p class="quote-mark">&ldquo;</p>
+          <p class="quote-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean vel justo.</p>
+          <p class="quote-author">&mdash; A happy shopper</p>
+        </aside>
       </section>
     </main>
 
-    <footer>
-      <p>&copy; 2026 ShopMate. All rights reserved.</p>
-      <a href="#title">Return to Shopping list</a>
+    <footer class="site-footer">
+      <div class="footer-content">
+        <div>
+          <a class="footer-logo" href="index.html">
+            <span class="logo-mark">S</span>
+            <span>ShopMate</span>
+          </a>
+          <p class="footer-text">Simple lists for brighter days.</p>
+        </div>
+
+        <div>
+          <h4>Explore</h4>
+          <ul class="footer-list">
+            <li><a class="footer-link" href="lists.html">My Lists</a></li>
+            <li><a class="footer-link" href="about.html">About us</a></li>
+            <li><a class="footer-link" href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Class project</h4>
+          <p class="footer-text">Built with only HTML and CSS.</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 ShopMate. All rights reserved.</p>
+        <a class="top-link" href="#top">Back to the top &uarr;</a>
+      </div>
     </footer>
   </body>
 </html>

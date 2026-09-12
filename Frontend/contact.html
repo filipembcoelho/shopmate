@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Contact the ShopMate team.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopMate | Contact</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+
+  <body>
+    <header class="site-header" id="top">
+      <div class="navbar">
+        <a class="logo" href="index.html"><span class="logo-mark">S</span><span>ShopMate</span></a>
+        <nav aria-label="Main navigation">
+          <ul class="nav-list">
+            <li><a class="nav-link" href="index.html">Home</a></li>
+            <li><a class="nav-link" href="lists.html">My Lists</a></li>
+            <li><a class="nav-link" href="about.html">About</a></li>
+            <li><a class="nav-link current" href="contact.html">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="contact-banner">
+        <p class="eyebrow">Say hello</p>
+        <h1>We would love to hear from you.</h1>
+        <p class="banner-text dark-banner-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vel justo.</p>
+      </section>
+
+      <section class="content-section contact-layout">
+        <div class="form-intro">
+          <p class="eyebrow">Contact us</p>
+          <h2>Tell us what you think</h2>
+          <p class="muted-text">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent elementum eros
+            sed arcu facilisis, vitae aliquet mauris posuere.
+          </p>
+
+          <div class="contact-note">
+            <h3>Before you send</h3>
+            <ul>
+              <li>Complete all required fields.</li>
+              <li>Choose the subject that fits best.</li>
+              <li>Tell us how you prefer to be contacted.</li>
+            </ul>
+          </div>
+        </div>
+
+        <form class="form-card" action="#" method="post">
+          <div class="form-row">
+            <div class="field">
+              <label for="first-name">First name *</label>
+              <input id="first-name" name="first-name" type="text" placeholder="Your first name" required>
+            </div>
+            <div class="field">
+              <label for="last-name">Last name *</label>
+              <input id="last-name" name="last-name" type="text" placeholder="Your last name" required>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="email">Email address *</label>
+            <input id="email" name="email" type="email" placeholder="you@example.com" required>
+          </div>
+
+          <div class="field">
+            <label for="subject">Subject</label>
+            <select id="subject" name="subject">
+              <option value="question">I have a question</option>
+              <option value="idea">I have an idea</option>
+              <option value="feedback">I want to share feedback</option>
+            </select>
+          </div>
+
+          <fieldset>
+            <legend>How should we reply?</legend>
+            <div class="radio-row">
+              <label class="choice"><input class="small-input" type="radio" name="reply" value="email" checked> Email</label>
+              <label class="choice"><input class="small-input" type="radio" name="reply" value="phone"> Phone</label>
+            </div>
+          </fieldset>
+
+          <div class="field">
+            <label for="message">Your message *</label>
+            <textarea id="message" name="message" rows="6" placeholder="Write your message here..." required></textarea>
+          </div>
+
+          <label class="choice"><input class="small-input" type="checkbox" name="updates"> I would like to receive occasional updates</label>
+          <button class="button primary-button" type="submit">Send message</button>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-content">
+        <div>
+          <a class="footer-logo" href="index.html"><span class="logo-mark">S</span><span>ShopMate</span></a>
+          <p class="footer-text">Simple lists for brighter days.</p>
+        </div>
+        <div>
+          <h4>Explore</h4>
+          <ul class="footer-list">
+            <li><a class="footer-link" href="index.html">Home</a></li>
+            <li><a class="footer-link" href="lists.html">My Lists</a></li>
+            <li><a class="footer-link" href="about.html">About us</a></li>
+          </ul>
+        </div>
+        <div><h4>Class project</h4><p class="footer-text">Built with only HTML and CSS.</p></div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 ShopMate. All rights reserved.</p>
+        <a class="top-link" href="#top">Back to the top &uarr;</a>
+      </div>
+    </footer>
+  </body>
+</html>
