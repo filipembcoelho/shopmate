@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="title" content="Shop Mate" />
+    <meta
+      name="description"
+      content="Shop Mate is a web application that helps users manage their shopping lists and find the best deals on products."
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop Mate</title>
+
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* Embedded styles */
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1 id="title">ShopMate</h1>
+      <p>Build and manage a <strong>simple</strong> shopping list</p>
+    </header>
+
+    <main>
+      <section>
+        <h2 id="shopping-list">Shopping List</h2>
+
+        <ul>
+          <li class="shopping-item">Milk</li>
+          <li class="shopping-item">Bread</li>
+          <li class="shopping-item">Eggs</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Add an Item</h2>
+
+        <ul>
+          <li>Milk</li>
+          <li>Bread</li>
+          <li>Eggs</li>
+        </ul>
+
+        <form>
+          <label for="item-name">Item Name:</label>
+          <input type="text" id="item-name" name="item-name" placeholder="example: Milk" required />
+
+          <!-- <input type="submit" value="Add Item" /> -->
+          <button type="submit" id="submit">Submit</button>
+        </form>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 ShopMate. All rights reserved.</p>
+      <a href="#title">Return to Shopping list</a>
+    </footer>
+  </body>
+</html>
