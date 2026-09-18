@@ -1,0 +1,21 @@
+<article>
+  <h3>{{ shoppingListItemInner().name }}</h3>
+
+  <div>
+    @if (showDetails()) {
+      <p>Quantity: {{ shoppingListItemInner().quantity }}</p>
+
+      @if (shoppingListItemInner().purchased) {
+        <strong>Purchased</strong>
+      } @else {
+        <em>Not yet</em>
+      }
+    }
+  </div>
+
+  <div class="actions">
+    <button (click)="toggleDetails()">Show or hide details</button>
+
+    <button (click)="requestToggle()">Change status</button>
+  </div>
+</article>

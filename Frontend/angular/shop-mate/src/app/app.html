@@ -1,0 +1,17 @@
+<app-shop-header></app-shop-header>
+
+<!--
+for
+<sho
+ist-item>
+
+-->
+
+@for (item of items; track item.id) {
+  <app-shopping-item
+    [shoppingListItemInner]="item"
+    (toggleRequested)="togglePurchased($event)"
+  ></app-shopping-item>
+} @empty {
+  <p>No items on Shopping list</p>
+}
