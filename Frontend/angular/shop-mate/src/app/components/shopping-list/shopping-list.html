@@ -1,0 +1,19 @@
+<section class="shopping-list-preview">
+  <div class="list-heading">
+    <div>
+      <p class="eyebrow">Shopping list</p>
+      <h2>{{ shoppingList().title }}</h2>
+    </div>
+    <span class="list-count">{{ shoppingList().items.length }}</span>
+  </div>
+  <div class="item.grid">
+    @for (item of shoppingList().items; track item.id) {
+      <app-shopping-item
+        [shoppingListItemInner]="item"
+        (toggleRequested)="requestToggle($event)"
+      ></app-shopping-item>
+    } @empty {
+      <p class="empty-list">No products in this list</p>
+    }
+  </div>
+</section>

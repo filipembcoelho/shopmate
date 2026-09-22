@@ -1,0 +1,25 @@
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 1.25rem 2.5rem;
+  color: #597269;
+  font-size: 0.9rem;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+.site-footer strong {
+  color: #0b463d;
+}
+
+@media (max-width: 600px) {
+  .site-footer {
+    flex-direction: column;
+    padding: 0 0.75rem 2rem;
+  }
+}

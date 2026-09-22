@@ -1,21 +1,27 @@
-<article>
-  <h3>{{ shoppingListItemInner().name }}</h3>
-
-  <div>
-    @if (showDetails()) {
-      <p>Quantity: {{ shoppingListItemInner().quantity }}</p>
-
-      @if (shoppingListItemInner().purchased) {
-        <strong>Purchased</strong>
-      } @else {
-        <em>Not yet</em>
-      }
-    }
+<article class="item-card">
+  <div class="item-top">
+    <span class="item-icon" aria-hidden="true">✦</span>
+    <span class="item-number">#{{ shoppingListItemInner().id }}</span>
   </div>
 
-  <div class="actions">
-    <button (click)="toggleDetails()">Show or hide details</button>
+  <h3>{{ shoppingListItemInner().name }}</h3>
 
-    <button (click)="requestToggle()">Change status</button>
+  @if (shoppingListItemInner().purchased) {
+    <strong class="status-done">✓ Purchased</strong>
+  } @else {
+    <span class="status-pending">○ Not yet purchased</span>
+  }
+
+  @if (showDetails()) {
+    <p class="item-details">Quantity: {{ shoppingListItemInner().quantity }}</p>
+  }
+
+  <div class="actions">
+    <button type="button" class="details-button" (click)="toggleDetails()">
+      Show or hide details
+    </button>
+    <button type="button" class="status-button" (click)="requestToggle()">
+      Change status
+    </button>
   </div>
 </article>

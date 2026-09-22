@@ -1,0 +1,53 @@
+.shopping-list-preview {
+  padding: 1.5rem;
+  border: 1px solid #dce9e1;
+  border-radius: 1.25rem;
+  background: #fff;
+  box-shadow: 0 12px 36px rgba(20, 66, 51, 0.08);
+}
+
+.list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+h2 {
+  margin: 0.25rem 0 0;
+}
+
+.item-grid {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.empty-list {
+  color: #597269;
+}
+
+.list-count {
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: #e7f5ed;
+  color: #0b6650;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.preview-hint {
+  margin: 1.25rem 0 0;
+  padding: 1.5rem;
+  border: 1px dashed #b7d5c2;
+  border-radius: 0.9rem;
+  color: #597269;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .list-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

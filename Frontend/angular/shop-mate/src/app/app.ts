@@ -1,53 +1,29 @@
-import { Component } from '@angular/core';
+import { Component, ɵallLeavingAnimations } from '@angular/core';
 import { ShopHeader } from './components/shop-header/shop-header';
-import { ShoppingItem } from './components/shopping-item/shopping-item';
-import { ShoppingListItem } from './Model/ShoppingListItem';
+import { ShopFooter } from './components/shop-footer/shop-footer';
+import { ShoppingListData } from './Model/ShoppingListData';
+import { createSeedShoppingLists } from './data/shopping-list.seed';
+import { ShoppingList } from './components/shopping-list/shopping-list';
 
 @Component({
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',
-  imports: [ShopHeader, ShoppingItem],
+  imports: [ShopHeader, ShopFooter, ShoppingList],
 })
 export class App {
-  title: string = 'shop-mate-v2';
-  items: ShoppingListItem[] = [];
+  lists: ShoppingListData[] = createSeedShoppingLists();
 
-  constructor() {
-    this.items = [
-      {
-        id: 1,
-        name: 'Arroz',
-        purchased: false,
-        quantity: 3,
-      },
-      {
-        id: 2,
-        name: 'Massa',
-        purchased: false,
-        quantity: 2,
-      },
-      {
-        id: 3,
-        name: 'Leite',
-        purchased: false,
-        quantity: 2,
-      },
-    ];
-  } // services
+  constructor() {}
 
-  // TODO: talk about oninit
+  togglePurchased(event: { listId: number; itemId: number }) {
+    const list = this.lists.find((c) => c.id === event.listId);
 
-  addItems(item: ShoppingListItem) {
-    if (item.name.trim() === '' || item.quantity <= 0) {
+    if (!list) {
       return;
     }
-    this.items.push(item);
-    // add to the API
-  }
 
-  togglePurchased(id: number) {
-    const foundItem = this.items.find((i) => i.id == id);
+    const foundItem = list.items.find((i) => i.id == event.itemId);
 
     if (foundItem) {
       foundItem.purchased = !foundItem.purchased;

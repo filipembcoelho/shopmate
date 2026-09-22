@@ -1,17 +1,35 @@
 <app-shop-header></app-shop-header>
 
-<!--
-for
-<sho
-ist-item>
+<main class="page-content">
+  <section class="intro-card">
+    <div>
+      <p class="eyebrow">Your lists, made simple</p>
+      <h2>Plan your next shop.</h2>
+      <p class="intro-copy">Keep the essentials together and check them off as you go.</p>
+    </div>
+    <div class="intro-mark" aria-hidden="true">✓</div>
+  </section>
 
--->
+  <section class="current-list" aria-labelledby="current-list-title">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Ready when you are</p>
+        <h2 id="current-list-title">My shopping list</h2>
+      </div>
+      <span class="item-count">{{ lists.length }} items</span>
+    </div>
 
-@for (item of items; track item.id) {
-  <app-shopping-item
-    [shoppingListItemInner]="item"
-    (toggleRequested)="togglePurchased($event)"
-  ></app-shopping-item>
-} @empty {
-  <p>No items on Shopping list</p>
-}
+    <div class="item-grid">
+      @for (list of lists; track list.id) {
+        <app-shopping-list
+          [shoppingList]="list"
+          (toggleRequested)="togglePurchased($event)"
+        ></app-shopping-list>
+      } @empty {
+        <p>No items on the shopping list yet.</p>
+      }
+    </div>
+  </section>
+</main>
+
+<app-shop-footer></app-shop-footer>
