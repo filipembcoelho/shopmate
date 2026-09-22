@@ -4,7 +4,7 @@
       <p class="eyebrow">Shopping list</p>
       <h2>{{ shoppingList().title }}</h2>
     </div>
-    <span class="list-count">{{ shoppingList().items.length }}</span>
+    <span class="list-count">{{ shoppingList().items.length | quantityLabel }}</span>
   </div>
   <div class="item.grid">
     @for (item of shoppingList().items; track item.id) {
@@ -17,3 +17,18 @@
     }
   </div>
 </section>
+
+@switch (shoppingList().items.length) {
+  @case (0) {
+    <p>Empty list</p>
+  }
+  @case (1) {
+    <p>Has a single item</p>
+  }
+  @case (2) {
+    <p>Has two items</p>
+  }
+  @default {
+    <p>Has more items</p>
+  }
+}

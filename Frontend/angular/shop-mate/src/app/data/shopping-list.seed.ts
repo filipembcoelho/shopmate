@@ -6,8 +6,8 @@ export function createSeedShoppingLists(): ShoppingListData[] {
       id: 1,
       title: 'Weekly groceries',
       items: [
-        { id: 1, name: 'Arroz', quantity: 3, purchased: false },
-        { id: 2, name: 'Leite', quantity: 2, purchased: false },
+        { id: 1, name: 'arroz doce', quantity: 3, purchased: false },
+        { id: 2, name: 'leite', quantity: 2, purchased: false },
       ],
     },
     {

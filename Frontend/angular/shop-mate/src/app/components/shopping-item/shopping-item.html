@@ -4,7 +4,13 @@
     <span class="item-number">#{{ shoppingListItemInner().id }}</span>
   </div>
 
-  <h3>{{ shoppingListItemInner().name }}</h3>
+  <h3>{{ shoppingListItemInner().name | titlecase }}</h3>
+
+  <p [class.purchased]="shoppingListItemInner().purchased">
+    {{ shoppingListItemInner().purchased ? 'Purchased' : 'Not yet purchased' }}
+  </p>
+
+  <p>{{ itemPrice | percent }}</p>
 
   @if (shoppingListItemInner().purchased) {
     <strong class="status-done">✓ Purchased</strong>
@@ -17,11 +23,9 @@
   }
 
   <div class="actions">
-    <button type="button" class="details-button" (click)="toggleDetails()">
+    <button type="button" class="btn btn-success" (click)="toggleDetails()">
       Show or hide details
     </button>
-    <button type="button" class="status-button" (click)="requestToggle()">
-      Change status
-    </button>
+    <button type="button" class="btn btn-primary" (click)="requestToggle()">Change status</button>
   </div>
 </article>
