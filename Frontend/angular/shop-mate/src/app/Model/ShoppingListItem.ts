@@ -4,5 +4,3 @@ export interface ShoppingListItem {
   quantity: number;
   purchased: boolean;
 }
-
-// DTO for the API

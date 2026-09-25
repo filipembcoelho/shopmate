@@ -1,16 +1,18 @@
-<header class="site-header">
-  <div class="header-inner">
-    <div class="header-content">
-      <p class="brand">SHOPMATE <span>●</span> EVERYDAY PLANNING</p>
-      <h1>ShopMate</h1>
-      <p class="header-tagline">Good plans start with a simple list.</p>
-      <p class="header-description">
-        Make room for the things that matter. Your next shopping trip starts here.
-      </p>
+<header class="bg-success bg-gradient text-white py-4 py-lg-5">
+  <div class="container">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-9">
+        <span class="badge text-bg-light mb-3">
+          <i class="bi bi-check2-circle me-1" aria-hidden="true"></i>
+          Everyday planning
+        </span>
+        <h1 class="display-4 fw-bold mb-2">ShopMate</h1>
+        <p class="lead mb-0">Good plans start with a simple list.</p>
+      </div>
+      <div class="col-lg-3 d-none d-lg-block text-center" aria-hidden="true">
+        <i class="bi bi-basket2-fill display-1"></i>
+      </div>
     </div>
-    <div class="header-decoration" aria-hidden="true">
-      <span class="header-step">01</span>
-      <span>PLAN · SHOP · DONE</span>
-    </div>
+    <p>{{ shoppingListService.remainingCount() }} products remaining</p>
   </div>
 </header>

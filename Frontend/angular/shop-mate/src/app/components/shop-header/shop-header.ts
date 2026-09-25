@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ShoppingListService } from '../../services/shopping-list';
 
 @Component({
   imports: [],
   selector: 'app-shop-header',
-  styleUrl: './shop-header.css',
   templateUrl: './shop-header.html',
 })
-export class ShopHeader {}
+export class ShopHeader {
+  readonly shoppingListService = inject(ShoppingListService);
+}

@@ -1,12 +1,10 @@
 import { Component, input, output } from '@angular/core';
 import { ShoppingListData } from '../../Model/ShoppingListData';
 import { ShoppingItem } from '../shopping-item/shopping-item';
-import { QuantityLabelPipe } from '../../pipes/quantity-label-pipe';
 
 @Component({
-  imports: [ShoppingItem, QuantityLabelPipe],
+  imports: [ShoppingItem],
   selector: 'app-shopping-list',
-  styleUrl: './shopping-list.css',
   templateUrl: './shopping-list.html',
 })
 export class ShoppingList {
@@ -21,17 +19,5 @@ export class ShoppingList {
       listId,
       itemId,
     });
-  }
-
-  method() {
-    let a = 1;
-    switch (a) {
-      case 1:
-        console.log(a);
-        break;
-      default:
-        console.log(a + 1);
-        break;
-    }
   }
 }

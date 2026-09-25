@@ -1,34 +1,22 @@
-<section class="shopping-list-preview">
-  <div class="list-heading">
-    <div>
-      <p class="eyebrow">Shopping list</p>
-      <h2>{{ shoppingList().title }}</h2>
+<section class="card h-100 border-0 shadow-sm">
+  <div class="card-body p-4">
+    <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 mb-4">
+      <div>
+        <p class="small fw-semibold text-success text-uppercase mb-1">Shopping list</p>
+        <h3 class="h4 fw-bold mb-0">{{ shoppingList().title }}</h3>
+      </div>
+      <span class="badge text-bg-light border">{{ shoppingList().items.length }} items</span>
     </div>
-    <span class="list-count">{{ shoppingList().items.length | quantityLabel }}</span>
-  </div>
-  <div class="item.grid">
-    @for (item of shoppingList().items; track item.id) {
-      <app-shopping-item
-        [shoppingListItemInner]="item"
-        (toggleRequested)="requestToggle($event)"
-      ></app-shopping-item>
-    } @empty {
-      <p class="empty-list">No products in this list</p>
-    }
+
+    <div class="vstack gap-3">
+      @for (item of shoppingList().items; track item.id) {
+        <app-shopping-item
+          [shoppingListItemInner]="item"
+          (toggleRequested)="requestToggle($event)"
+        ></app-shopping-item>
+      } @empty {
+        <p class="alert alert-info mb-0">No products in this list yet.</p>
+      }
+    </div>
   </div>
 </section>
-
-@switch (shoppingList().items.length) {
-  @case (0) {
-    <p>Empty list</p>
-  }
-  @case (1) {
-    <p>Has a single item</p>
-  }
-  @case (2) {
-    <p>Has two items</p>
-  }
-  @default {
-    <p>Has more items</p>
-  }
-}

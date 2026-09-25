@@ -1,35 +1,41 @@
-<app-shop-header></app-shop-header>
+<div class="d-flex min-vh-100 flex-column bg-body-tertiary">
+  <app-shop-header></app-shop-header>
 
-<main class="page-content">
-  <section class="intro-card">
-    <div>
-      <p class="eyebrow">Your lists, made simple</p>
-      <h2>Plan your next shop.</h2>
-      <p class="intro-copy">Keep the essentials together and check them off as you go.</p>
-    </div>
-    <div class="intro-mark" aria-hidden="true">✓</div>
-  </section>
-
-  <section class="current-list" aria-labelledby="current-list-title">
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">Ready when you are</p>
-        <h2 id="current-list-title">My shopping list</h2>
+  <main class="container flex-grow-1 py-4 py-lg-5">
+    <section class="row align-items-center g-3 mb-4" aria-labelledby="lists-title">
+      <div class="col">
+        <p class="small fw-semibold text-success text-uppercase mb-1">Your lists, made simple</p>
+        <h2 id="lists-title" class="h3 fw-bold mb-1">My shopping lists</h2>
+        <p class="text-body-secondary mb-0">
+          Keep the essentials together and check them off as you go.
+        </p>
       </div>
-      <span class="item-count">{{ lists.length }} items</span>
-    </div>
+      <div class="col-12 col-md-auto">
+        <span class="badge rounded-pill text-bg-success fs-6">
+          <i class="bi bi-basket me-1" aria-hidden="true"></i>
+          {{ listService.lists().length }} lists
+        </span>
+      </div>
+    </section>
 
-    <div class="item-grid">
-      @for (list of lists; track list.id) {
-        <app-shopping-list
-          [shoppingList]="list"
-          (toggleRequested)="togglePurchased($event)"
-        ></app-shopping-list>
-      } @empty {
-        <p>No items on the shopping list yet.</p>
-      }
-    </div>
-  </section>
-</main>
+    <section aria-label="Shopping lists">
+      <div class="row g-4">
+        @for (list of listService.lists(); track list.id) {
+          <div class="col-12 col-lg-6">
+            <app-shopping-list
+              class="d-block h-100"
+              [shoppingList]="list"
+              (toggleRequested)="togglePurchased($event)"
+            ></app-shopping-list>
+          </div>
+        } @empty {
+          <div class="col-12">
+            <p class="alert alert-info mb-0">No shopping lists yet.</p>
+          </div>
+        }
+      </div>
+    </section>
+  </main>
 
-<app-shop-footer></app-shop-footer>
+  <app-shop-footer></app-shop-footer>
+</div>

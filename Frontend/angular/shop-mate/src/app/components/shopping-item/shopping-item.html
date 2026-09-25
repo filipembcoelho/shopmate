@@ -1,31 +1,35 @@
-<article class="item-card">
-  <div class="item-top">
-    <span class="item-icon" aria-hidden="true">✦</span>
-    <span class="item-number">#{{ shoppingListItemInner().id }}</span>
+<article class="rounded-3 border bg-body-tertiary p-3">
+  <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+    <div>
+      <span class="small text-body-secondary">#{{ shoppingListItemInner().id }}</span>
+      <h4
+        class="h6 fw-semibold mb-0"
+        [class.text-decoration-line-through]="shoppingListItemInner().purchased"
+      >
+        {{ shoppingListItemInner().name | titlecase }}
+      </h4>
+    </div>
+    @if (shoppingListItemInner().purchased) {
+      <span class="badge text-bg-success">
+        <i class="bi bi-check-circle me-1" aria-hidden="true"></i>Purchased
+      </span>
+    } @else {
+      <span class="badge text-bg-secondary">To buy</span>
+    }
   </div>
 
-  <h3>{{ shoppingListItemInner().name | titlecase }}</h3>
-
-  <p [class.purchased]="shoppingListItemInner().purchased">
-    {{ shoppingListItemInner().purchased ? 'Purchased' : 'Not yet purchased' }}
-  </p>
-
-  <p>{{ itemPrice | percent }}</p>
-
-  @if (shoppingListItemInner().purchased) {
-    <strong class="status-done">✓ Purchased</strong>
-  } @else {
-    <span class="status-pending">○ Not yet purchased</span>
-  }
-
   @if (showDetails()) {
-    <p class="item-details">Quantity: {{ shoppingListItemInner().quantity }}</p>
+    <p class="small text-body-secondary mb-2">
+      Quantity: {{ shoppingListItemInner().quantity | quantityLabel }}
+    </p>
   }
 
-  <div class="actions">
-    <button type="button" class="btn btn-success" (click)="toggleDetails()">
-      Show or hide details
+  <div class="d-flex flex-wrap gap-2 mt-3">
+    <button type="button" class="btn btn-outline-success btn-sm" (click)="toggleDetails()">
+      {{ showDetails() ? 'Hide details' : 'Show details' }}
     </button>
-    <button type="button" class="btn btn-primary" (click)="requestToggle()">Change status</button>
+    <button type="button" class="btn btn-success btn-sm" (click)="requestToggle()">
+      {{ shoppingListItemInner().purchased ? 'Mark as needed' : 'Mark as purchased' }}
+    </button>
   </div>
 </article>
