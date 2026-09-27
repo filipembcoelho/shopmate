@@ -1,9 +1,12 @@
-import { computed, Service, signal } from '@angular/core';
+import { computed, inject, Service, signal } from '@angular/core';
 import { ShoppingListData } from '../Model/ShoppingListData';
 import { createSeedShoppingLists } from '../data/shopping-list.seed';
+import { HttpClient } from '@angular/common/http';
 
 @Service()
 export class ShoppingListService {
+  readonly http = inject(HttpClient);
+
   private readonly currentLists = signal<ShoppingListData[]>(createSeedShoppingLists());
 
   readonly lists = this.currentLists.asReadonly();
@@ -22,8 +25,6 @@ export class ShoppingListService {
 
         const foundItem = list.items.find((item) => item.id === event.itemId);
 
-        //truthy or falsy values
-
         if (foundItem) {
           foundItem.purchased = !foundItem.purchased;
         }
@@ -31,5 +32,9 @@ export class ShoppingListService {
         return list;
       }),
     );
+  }
+
+  method() {
+    this.http.get<ShoppingListData[]>('http://localhost:4897/shoppinglists').subscribe();
   }
 }

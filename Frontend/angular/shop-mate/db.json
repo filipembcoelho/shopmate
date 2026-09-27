@@ -19,9 +19,7 @@
     {
       "id": 3,
       "title": "From the mock API",
-      "items": [
-        { "id": 1, "name": "Café", "quantity": 1, "purchased": false }
-      ]
+      "items": [{ "id": 1, "name": "Café", "quantity": 1, "purchased": false }]
     }
   ]
 }

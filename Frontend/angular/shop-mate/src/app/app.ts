@@ -12,9 +12,6 @@ import { ShoppingList } from './components/shopping-list/shopping-list';
 export class App {
   readonly listService = inject(ShoppingListService);
 
-  // readonly lists = this.listService.lists();
-  // lists: ShoppingListData[] = createSeedShoppingLists();
-
   togglePurchased(event: { listId: number; itemId: number }): void {
     this.listService.togglePurchased(event);
   }
