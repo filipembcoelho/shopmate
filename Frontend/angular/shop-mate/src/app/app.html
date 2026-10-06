@@ -5,6 +5,56 @@
     Run Session demo
   </button>
 
+  <h2>Template Form - POST</h2>
+
+  <form class="card container mb-4" #newListForm="ngForm" (ngSubmit)="createList()">
+    <label for="new-list-title" class="form-label">New list title</label>
+    <input
+      id="new-list-title"
+      name="newListTitle"
+      type="text"
+      class="form-control"
+      required
+      minlength="2"
+      [(ngModel)]="newListTitle"
+      #titleField="ngModel"
+    />
+    @if (titleField.invalid && titleField.touched) {
+      <p class="alert alert-danger mt-2">
+        Please enter a valid list title (at least 2 characters).
+      </p>
+    }
+    <button type="submit" class="btn btn-primary mt-2" [disabled]="newListForm.invalid">
+      Create list
+    </button>
+    <p>{{ newListTitle }}</p>
+  </form>
+
+  <h2>Reactive Forms - PUT</h2>
+
+  <form class="card container mb-4" [formGroup]="renameForm" (ngSubmit)="renameList()">
+    <label for="list-to-rename" class="form-label">List to rename</label>
+    <select id="list-to-rename" class="form-select" formControlName="listId">
+      <option>Choose a list</option>
+      @for (list of listService.currentLists(); track list.id) {
+        <option [value]="list.id">{{ list.title }}</option>
+      }
+    </select>
+    <label for="new-list-title-rename" class="form-label mt-2">New list title</label>
+    <input
+      id="new-list-title-rename"
+      type="text"
+      class="form-control mt-2"
+      placeholder="New list title"
+      formControlName="title"
+    />
+    <button type="submit" class="btn btn-primary mt-2">Rename list</button>
+
+    <button type="button" class="btn btn-secondary mt-2 ms-2" (click)="deleteList()">Delete</button>
+  </form>
+
+  <p>{{ renameForm.get('listId')?.value }}</p>
+
   <main class="container flex-grow-1 py-4 py-lg-5">
     <section class="row align-items-center g-3 mb-4" aria-labelledby="lists-title">
       <div class="col">

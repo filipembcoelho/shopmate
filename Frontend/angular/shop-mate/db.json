@@ -1,25 +1,73 @@
 {
   "shoppingLists": [
     {
-      "id": 1,
+      "id": "1",
       "title": "Weekly groceries",
       "items": [
-        { "id": 1, "name": "Arroz", "quantity": 3, "purchased": false },
-        { "id": 2, "name": "Leite", "quantity": 2, "purchased": false }
+        {
+          "id": 1,
+          "name": "Arroz",
+          "quantity": 3,
+          "purchased": false
+        },
+        {
+          "id": 2,
+          "name": "Leite",
+          "quantity": 2,
+          "purchased": false
+        }
       ]
     },
     {
-      "id": 2,
+      "id": "2",
       "title": "Weekend plans",
       "items": [
-        { "id": 1, "name": "Massa", "quantity": 2, "purchased": false },
-        { "id": 2, "name": "Pão", "quantity": 1, "purchased": false }
+        {
+          "id": 1,
+          "name": "Massa",
+          "quantity": 2,
+          "purchased": false
+        },
+        {
+          "id": 2,
+          "name": "Pão",
+          "quantity": 1,
+          "purchased": false
+        }
       ]
     },
     {
-      "id": 3,
+      "id": "3",
       "title": "From the mock API",
-      "items": [{ "id": 1, "name": "Café", "quantity": 1, "purchased": false }]
+      "items": [
+        {
+          "id": 1,
+          "name": "Café",
+          "quantity": 1,
+          "purchased": false
+        }
+      ]
+    },
+    {
+      "title": "Christmas List",
+      "items": [],
+      "id": "4"
+    },
+    {
+      "title": "Christmas List 3",
+      "items": [],
+      "id": "6"
+    },
+    {
+      "title": "Christmas List 4",
+      "items": [],
+      "id": "7"
+    },
+    {
+      "title": "Christmas List 5",
+      "items": [],
+      "id": "8"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }
