@@ -17,14 +17,14 @@
       <div class="col-12 col-md-auto">
         <span class="badge rounded-pill text-bg-success fs-6">
           <i class="bi bi-basket me-1" aria-hidden="true"></i>
-          {{ listService.lists().length }} lists
+          {{ listService.currentLists().length }} lists
         </span>
       </div>
     </section>
 
     <section aria-label="Shopping lists">
       <div class="row g-4">
-        @for (list of listService.lists(); track list.id) {
+        @for (list of listService.currentLists(); track list.id) {
           <div class="col-12 col-lg-6">
             <app-shopping-list
               class="d-block h-100"
