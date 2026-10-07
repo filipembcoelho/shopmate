@@ -10,7 +10,7 @@ import { ShoppingItem } from '../shopping-item/shopping-item';
 export class ShoppingList {
   shoppingList = input.required<ShoppingListData>();
 
-  toggleRequested = output<{ listId: number; itemId: number }>();
+  toggleRequested = output<{ listId: string; itemId: number }>();
 
   requestToggle(itemId: number) {
     const listId = this.shoppingList().id;

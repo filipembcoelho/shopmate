@@ -1,0 +1,142 @@
+body {
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+}
+
+.shopmate-page {
+  background: #f3f8f5;
+  color: #173b35;
+}
+
+.shopmate-hero {
+  background: linear-gradient(125deg, #148767, #0b665b 55%, #074942);
+  overflow: hidden;
+}
+
+.shopmate-hero-eyebrow {
+  color: #c6f5dd;
+  letter-spacing: 0.12em;
+}
+
+.shopmate-brand-icon,
+.shopmate-icon,
+.shopmate-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shopmate-brand-icon {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 0.9rem;
+  background: #ffffff;
+  color: #0b765d;
+  font-size: 1.35rem;
+}
+
+.shopmate-hero-stat {
+  min-width: 9.5rem;
+  padding: 0.85rem 1.15rem;
+  border: 1px solid #ffffff55;
+  border-radius: 1rem;
+  background: #ffffff1c;
+}
+
+.shopmate-hero-art {
+  position: relative;
+  width: 17rem;
+  height: 17rem;
+  border: 1px solid #ffffff66;
+  border-radius: 50%;
+  background: #ffffff1c;
+  color: #e5fff1;
+  font-size: 8rem;
+  box-shadow: 0 1.5rem 4rem #073f3d55;
+}
+
+.shopmate-art-check,
+.shopmate-art-spark {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 1rem;
+  font-size: 1.6rem;
+  box-shadow: 0 0.7rem 1.5rem #073f3d33;
+}
+
+.shopmate-art-check {
+  right: -0.5rem;
+  top: 1.4rem;
+  background: #ffffff;
+  color: #11825f;
+}
+
+.shopmate-art-spark {
+  left: -1rem;
+  bottom: 1.3rem;
+  background: #f4d76a;
+  color: #765b00;
+}
+
+.shopmate-panel,
+.shopmate-list {
+  border-radius: 1.35rem;
+  box-shadow: 0 0.8rem 2.5rem #174d3b12;
+}
+
+.shopmate-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.9rem;
+  background: #dcf6e7;
+  color: #0d795a;
+  font-size: 1.35rem;
+}
+
+.shopmate-icon-soft {
+  background: #e8f1dc;
+}
+
+.shopmate-empty {
+  border: 2px dashed #c9ded1;
+  border-radius: 1.35rem;
+  background: #ffffff;
+}
+
+.shopmate-item,
+.shopmate-list-empty {
+  background: #f7faf8;
+}
+
+.shopmate-item {
+  border-color: #e3eee7;
+}
+
+.shopmate-item-done {
+  background: #ecf8ef;
+}
+
+.shopmate-item-icon {
+  flex: 0 0 2.1rem;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 0.7rem;
+  background: #e3f4e8;
+  color: #147f5d;
+}
+
+.shopmate-list-empty {
+  border-radius: 0.9rem;
+}
+
+.shopmate-footer {
+  background: #ffffff;
+}

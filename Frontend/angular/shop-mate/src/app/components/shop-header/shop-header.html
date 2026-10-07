@@ -1,18 +1,44 @@
-<header class="bg-success bg-gradient text-white py-4 py-lg-5">
+<header class="shopmate-hero text-white">
   <div class="container">
-    <div class="row align-items-center g-4">
-      <div class="col-lg-9">
-        <span class="badge text-bg-light mb-3">
-          <i class="bi bi-check2-circle me-1" aria-hidden="true"></i>
-          Everyday planning
-        </span>
-        <h1 class="display-4 fw-bold mb-2">ShopMate</h1>
-        <p class="lead mb-0">Good plans start with a simple list.</p>
+    <div class="d-flex align-items-center justify-content-between gap-3 py-4">
+      <div class="d-flex align-items-center gap-3">
+        <span class="shopmate-brand-icon" aria-hidden="true"
+          ><i class="bi bi-basket2-fill"></i
+        ></span>
+        <span class="fs-4 fw-bold">ShopMate</span>
       </div>
-      <div class="col-lg-3 d-none d-lg-block text-center" aria-hidden="true">
-        <i class="bi bi-basket2-fill display-1"></i>
+      <span class="badge rounded-pill border border-white border-opacity-50 px-3 py-2">
+        <i class="bi bi-stars me-1" aria-hidden="true"></i>Everyday planning
+      </span>
+    </div>
+
+    <div class="row align-items-center g-5 py-5">
+      <div class="col-lg-7 pb-lg-4">
+        <p class="shopmate-hero-eyebrow small fw-bold text-uppercase mb-3">
+          Less to remember. More room to enjoy.
+        </p>
+        <h1 class="display-4 fw-bold lh-sm mb-3">Good plans start with a simple list.</h1>
+        <p class="lead mb-4">
+          Gather the essentials, keep each trip organized, and see what is still left to buy.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <div class="shopmate-hero-stat">
+            <strong class="fs-3 d-block">{{ shoppingListService.currentLists().length }}</strong>
+            <span class="small">shopping lists</span>
+          </div>
+          <div class="shopmate-hero-stat">
+            <strong class="fs-3 d-block">{{ shoppingListService.remainingCount() }}</strong>
+            <span class="small">products remaining</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5 d-none d-lg-flex justify-content-center" aria-hidden="true">
+        <div class="shopmate-hero-art d-flex align-items-center justify-content-center">
+          <i class="bi bi-basket2-fill"></i>
+          <span class="shopmate-art-check"><i class="bi bi-check-lg"></i></span>
+          <span class="shopmate-art-spark"><i class="bi bi-stars"></i></span>
+        </div>
       </div>
     </div>
-    <p>{{ shoppingListService.remainingCount() }} products remaining</p>
   </div>
 </header>

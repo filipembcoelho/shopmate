@@ -29,48 +29,44 @@ export class App {
 
   newListTitle = '';
 
-  togglePurchased(event: { listId: number; itemId: number }): void {
+  togglePurchased(event: { listId: string; itemId: number }): void {
     this.listService.togglePurchased(event);
   }
 
-  runSessionDemo() {
+  loadLists(): void {
     this.listService.getLists();
   }
 
-  createList() {
-    console.log('Creating a new list...', this.newListTitle);
-
-    if (this.newListTitle.trim() === '') {
-      console.log('List title is empty. Aborting creation.');
+  createList(): void {
+    const title = this.newListTitle.trim();
+    if (title.length < 2) {
+      this.newListTitle = title;
       return;
     }
 
-    this.listService.createList(this.newListTitle);
-    // this.newListTitle = '';
+    this.listService.createList(title);
   }
 
-  renameList() {
-    console.log('Renaming list...', this.renameForm.value);
-    if (this.renameForm.invalid) {
+  renameList(): void {
+    if (this.renameForm.invalid) return;
+
+    const listId = this.renameForm.controls.listId.value;
+    const title = this.renameForm.controls.title.value.trim();
+    if (title.length < 2) {
+      this.renameForm.controls.title.setValue(title);
+      this.renameForm.controls.title.markAsTouched();
       return;
     }
+    if (listId === '') return;
 
-    const newTitle = this.renameForm.get('title')?.value;
-
-    if (newTitle?.trim() === '') {
-      return;
-    }
-
-    console.log('Renaming list to:', newTitle);
-    this.listService.renameList(Number(this.renameForm.get('listId')?.value), newTitle!);
+    this.listService.renameList(listId, title);
   }
 
-  deleteList() {
-    const listId = Number(this.renameForm.get('listId')?.value);
-    if (isNaN(listId)) {
-      return;
-    }
+  deleteList(): void {
+    const listId = this.renameForm.controls.listId.value;
+    if (listId === '') return;
 
     this.listService.deleteList(listId);
+    this.renameForm.reset();
   }
 }

@@ -1,34 +1,50 @@
-<article class="rounded-3 border bg-body-tertiary p-3">
-  <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
-    <div>
-      <span class="small text-body-secondary">#{{ shoppingListItemInner().id }}</span>
-      <h4
-        class="h6 fw-semibold mb-0"
-        [class.text-decoration-line-through]="shoppingListItemInner().purchased"
-      >
-        {{ shoppingListItemInner().name | titlecase }}
-      </h4>
-    </div>
-    @if (shoppingListItemInner().purchased) {
-      <span class="badge text-bg-success">
-        <i class="bi bi-check-circle me-1" aria-hidden="true"></i>Purchased
+<article
+  class="shopmate-item rounded-4 border p-3"
+  [class.shopmate-item-done]="shoppingListItemInner().purchased"
+>
+  <div class="d-flex align-items-start justify-content-between gap-3">
+    <div class="d-flex align-items-start gap-3">
+      <span class="shopmate-item-icon" aria-hidden="true">
+        <i
+          class="bi"
+          [class.bi-check-lg]="shoppingListItemInner().purchased"
+          [class.bi-bag]="!shoppingListItemInner().purchased"
+        ></i>
       </span>
-    } @else {
-      <span class="badge text-bg-secondary">To buy</span>
-    }
+      <div>
+        <h4
+          class="h6 fw-bold mb-1"
+          [class.text-decoration-line-through]="shoppingListItemInner().purchased"
+        >
+          {{ shoppingListItemInner().name | titlecase }}
+        </h4>
+        <span class="small text-body-secondary">
+          {{ shoppingListItemInner().purchased ? 'Already in the basket' : 'Still to buy' }}
+        </span>
+      </div>
+    </div>
+    <span
+      class="badge"
+      [class.text-bg-success]="shoppingListItemInner().purchased"
+      [class.text-bg-light]="!shoppingListItemInner().purchased"
+    >
+      {{ shoppingListItemInner().purchased ? 'Done' : 'To buy' }}
+    </span>
   </div>
 
   @if (showDetails()) {
-    <p class="small text-body-secondary mb-2">
-      Quantity: {{ shoppingListItemInner().quantity | quantityLabel }}
+    <p class="small text-body-secondary mt-3 mb-0">
+      Quantity:
+      <strong class="text-body">{{ shoppingListItemInner().quantity | quantityLabel }}</strong>
     </p>
   }
 
   <div class="d-flex flex-wrap gap-2 mt-3">
-    <button type="button" class="btn btn-outline-success btn-sm" (click)="toggleDetails()">
+    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="toggleDetails()">
       {{ showDetails() ? 'Hide details' : 'Show details' }}
     </button>
-    <button type="button" class="btn btn-success btn-sm" (click)="requestToggle()">
+    <button type="button" class="btn btn-outline-success btn-sm" (click)="requestToggle()">
+      <i class="bi bi-check2 me-1" aria-hidden="true"></i>
       {{ shoppingListItemInner().purchased ? 'Mark as needed' : 'Mark as purchased' }}
     </button>
   </div>

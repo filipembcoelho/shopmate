@@ -3,7 +3,7 @@ import { ShoppingListData } from '../Model/ShoppingListData';
 export function createSeedShoppingLists(): ShoppingListData[] {
   return [
     {
-      id: 1,
+      id: '1',
       title: 'Weekly groceries',
       items: [
         { id: 1, name: 'arroz doce', quantity: 3, purchased: false },
@@ -11,7 +11,7 @@ export function createSeedShoppingLists(): ShoppingListData[] {
       ],
     },
     {
-      id: 2,
+      id: '2',
       title: 'Weekend plans',
       items: [
         { id: 1, name: 'Massa', quantity: 2, purchased: false },

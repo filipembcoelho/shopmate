@@ -1,11 +1,13 @@
-<section class="card h-100 border-0 shadow-sm">
+<section class="card shopmate-list h-100 border-0">
   <div class="card-body p-4">
-    <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 mb-4">
+    <div class="d-flex flex-wrap align-items-start justify-content-between gap-3 mb-4">
       <div>
-        <p class="small fw-semibold text-success text-uppercase mb-1">Shopping list</p>
+        <p class="small fw-bold text-success text-uppercase mb-2">Shopping list</p>
         <h3 class="h4 fw-bold mb-0">{{ shoppingList().title }}</h3>
       </div>
-      <span class="badge text-bg-light border">{{ shoppingList().items.length }} items</span>
+      <span class="badge rounded-pill text-bg-light border px-3 py-2">
+        {{ shoppingList().items.length }} {{ shoppingList().items.length === 1 ? 'item' : 'items' }}
+      </span>
     </div>
 
     <div class="vstack gap-3">
@@ -15,7 +17,11 @@
           (toggleRequested)="requestToggle($event)"
         ></app-shopping-item>
       } @empty {
-        <p class="alert alert-info mb-0">No products in this list yet.</p>
+        <div class="shopmate-list-empty text-center p-4">
+          <i class="bi bi-card-checklist fs-2 text-success" aria-hidden="true"></i>
+          <p class="fw-semibold mt-2 mb-1">A fresh start</p>
+          <p class="small text-body-secondary mb-0">No products in this list yet.</p>
+        </div>
       }
     </div>
   </div>
