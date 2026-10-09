@@ -1,8 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { ShoppingListService } from '../../services/shopping-list';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  imports: [],
+  imports: [RouterLink],
   selector: 'app-shop-header',
   templateUrl: './shop-header.html',
 })

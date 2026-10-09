@@ -1,0 +1,167 @@
+<section
+  class="d-flex flex-column flex-lg-row align-items-lg-end justify-content-between gap-3 mb-4"
+  aria-labelledby="workspace-title"
+>
+  <div>
+    <p class="small fw-bold text-success text-uppercase mb-2">Your planning space</p>
+    <h2 id="workspace-title" class="display-6 fw-bold mb-2">Make the next shop feel easy.</h2>
+    <p class="text-body-secondary mb-0">
+      Create a list, give it a better name, and keep track of what is still needed.
+    </p>
+  </div>
+  <button type="button" class="btn btn-success btn-lg px-4" (click)="loadLists()">
+    <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Load lists
+  </button>
+</section>
+
+@if (listService.errorMessage() !== '') {
+  <div class="alert alert-danger" role="alert">{{ listService.errorMessage() }}</div>
+}
+@if (listService.successMessage() !== '') {
+  <div class="alert alert-success" role="status">{{ listService.successMessage() }}</div>
+}
+
+<section class="row g-4 mb-5" aria-label="Manage shopping lists">
+  <div class="col-12 col-lg-6">
+    <article class="card shopmate-panel h-100 border-0">
+      <div class="card-body p-4 p-xl-5">
+        <span class="shopmate-icon mb-4" aria-hidden="true">
+          <i class="bi bi-plus-lg"></i>
+        </span>
+        <p class="small fw-bold text-success text-uppercase mb-2">01 · Start fresh</p>
+        <h3 class="h4 fw-bold mb-2">Create a shopping list</h3>
+        <p class="text-body-secondary mb-4">
+          Give your next trip a name. You can add the details as your plan grows.
+        </p>
+
+        <form #newListForm="ngForm" (ngSubmit)="createList()">
+          <label for="new-list-title" class="form-label fw-semibold">List title</label>
+          <input
+            id="new-list-title"
+            name="newListTitle"
+            type="text"
+            class="form-control form-control-lg"
+            placeholder="For example, weekend groceries"
+            required
+            minlength="2"
+            [(ngModel)]="newListTitle"
+            #titleField="ngModel"
+          />
+          @if (titleField.invalid && titleField.touched) {
+            <p class="small text-danger mt-2 mb-0">Use at least two characters.</p>
+          }
+          <button
+            type="submit"
+            class="btn btn-success w-100 mt-4"
+            [disabled]="newListForm.invalid || listService.isCreating()"
+          >
+            <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>
+            {{ listService.isCreating() ? 'Creating...' : 'Create list' }}
+          </button>
+        </form>
+      </div>
+    </article>
+  </div>
+
+  <div class="col-12 col-lg-6">
+    <article class="card shopmate-panel h-100 border-0">
+      <div class="card-body p-4 p-xl-5">
+        <span class="shopmate-icon shopmate-icon-soft mb-4" aria-hidden="true">
+          <i class="bi bi-pencil-square"></i>
+        </span>
+        <p class="small fw-bold text-success text-uppercase mb-2">02 · Keep it tidy</p>
+        <h3 class="h4 fw-bold mb-2">Rename a list</h3>
+        <p class="text-body-secondary mb-4">
+          Choose a list and give it a title that is easier to recognize.
+        </p>
+
+        <form [formGroup]="renameForm" (ngSubmit)="renameList()">
+          <label for="list-to-rename" class="form-label fw-semibold">Shopping list</label>
+          <select id="list-to-rename" class="form-select form-select-lg" formControlName="listId">
+            <option value="">Choose a list</option>
+            @for (list of listService.currentLists(); track list.id) {
+              <option [value]="list.id">{{ list.title }}</option>
+            }
+          </select>
+
+          <label for="new-list-title-rename" class="form-label fw-semibold mt-3">New title</label>
+          <input
+            id="new-list-title-rename"
+            type="text"
+            class="form-control form-control-lg"
+            placeholder="Give this list a new name"
+            formControlName="title"
+          />
+          @if (renameForm.controls.title.invalid && renameForm.controls.title.touched) {
+            <p class="small text-danger mt-2 mb-0">Use at least two characters.</p>
+          }
+
+          <div class="d-flex flex-wrap gap-2 mt-4">
+            <button
+              type="submit"
+              class="btn btn-success flex-grow-1"
+              [disabled]="renameForm.invalid"
+            >
+              <i class="bi bi-check2 me-2" aria-hidden="true"></i>Save new name
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              [disabled]="renameForm.controls.listId.value === ''"
+              (click)="deleteList()"
+            >
+              <i class="bi bi-trash3 me-2" aria-hidden="true"></i>Delete
+            </button>
+          </div>
+        </form>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="lists-title">
+  <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+    <div>
+      <p class="small fw-bold text-success text-uppercase mb-2">Everything in one place</p>
+      <h2 id="lists-title" class="h2 fw-bold mb-1">My shopping lists</h2>
+      <p class="text-body-secondary mb-0">
+        A clear view of every list and every item left to buy. Item checkmarks stay local until you
+        load again.
+      </p>
+    </div>
+    <span class="badge rounded-pill text-bg-success fs-6 px-3 py-2">
+      <i class="bi bi-basket2 me-1" aria-hidden="true"></i>
+      {{ listService.currentLists().length }} lists
+    </span>
+  </div>
+
+  @if (!listService.hasLoaded()) {
+    <div class="shopmate-empty text-center p-5">
+      <i class="bi bi-basket2 display-4 text-success" aria-hidden="true"></i>
+      <h3 class="h4 fw-bold mt-3">Your lists are ready to load</h3>
+      <p class="text-body-secondary mb-0">
+        Use the Load lists button above to bring them in from the mock API.
+      </p>
+    </div>
+  } @else {
+    <div class="row g-4">
+      @for (list of listService.currentLists(); track list.id) {
+        <div class="col-12 col-xl-6">
+          <app-shopping-list
+            class="d-block h-100"
+            [shoppingList]="list"
+            (toggleRequested)="togglePurchased($event)"
+          ></app-shopping-list>
+        </div>
+      } @empty {
+        <div class="col-12">
+          <div class="shopmate-empty text-center p-5">
+            <i class="bi bi-card-checklist display-4 text-success" aria-hidden="true"></i>
+            <h3 class="h4 fw-bold mt-3">No lists yet</h3>
+            <p class="text-body-secondary mb-0">Create your first list using the form above.</p>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</section>
