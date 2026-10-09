@@ -4,6 +4,7 @@ import { ShopFooter } from './components/shop-footer/shop-footer';
 import { ShoppingListService } from './services/shopping-list';
 import { ShoppingList } from './components/shopping-list/shopping-list';
 import {
+  FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
@@ -18,13 +19,19 @@ import {
 })
 export class App {
   readonly listService = inject(ShoppingListService);
+  private readonly formBuilder = inject(FormBuilder);
 
-  readonly renameForm = new FormGroup({
-    listId: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
-    title: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(2)],
-    }),
+  // readonly renameForm = new FormGroup({
+  //   listId: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+  //   title: new FormControl('', {
+  //     nonNullable: true,
+  //     validators: [Validators.required, Validators.minLength(2)],
+  //   }),
+  // });
+
+  readonly renameForm = this.formBuilder.group({
+    listId: ['', Validators.required],
+    title: ['', [Validators.required, Validators.minLength(2)]],
   });
 
   newListTitle = '';
@@ -51,22 +58,22 @@ export class App {
     if (this.renameForm.invalid) return;
 
     const listId = this.renameForm.controls.listId.value;
-    const title = this.renameForm.controls.title.value.trim();
-    if (title.length < 2) {
-      this.renameForm.controls.title.setValue(title);
+    const title = this.renameForm.controls.title.value?.trim();
+    if (title!.length < 2) {
+      this.renameForm.controls.title.setValue(title!);
       this.renameForm.controls.title.markAsTouched();
       return;
     }
     if (listId === '') return;
 
-    this.listService.renameList(listId, title);
+    this.listService.renameList(listId!, title!);
   }
 
   deleteList(): void {
     const listId = this.renameForm.controls.listId.value;
     if (listId === '') return;
 
-    this.listService.deleteList(listId);
+    this.listService.deleteList(listId!);
     this.renameForm.reset();
   }
 }

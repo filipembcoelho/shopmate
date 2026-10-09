@@ -20,7 +20,7 @@
     },
     {
       "id": "2",
-      "title": "Weekend plans",
+      "title": "Holidays plans",
       "items": [
         {
           "id": 1,
@@ -38,7 +38,7 @@
     },
     {
       "id": "3",
-      "title": "From the mock API",
+      "title": "Mock API List",
       "items": [
         {
           "id": 1,
@@ -67,6 +67,11 @@
       "title": "Christmas List 5",
       "items": [],
       "id": "8"
+    },
+    {
+      "id": "9",
+      "title": "Chris List 11",
+      "items": []
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

@@ -70,36 +70,6 @@ export class ShoppingListService {
     });
   }
 
-  private nextListId(lists: ShoppingListData[]): string {
-    let highestId = 0;
-
-    for (const list of lists) {
-      const id = Number(list.id);
-      if (Number.isInteger(id) && id > highestId) {
-        highestId = id;
-      }
-    }
-
-    return String(highestId + 1);
-  }
-
-  private saveNewList(title: string, id: string): void {
-    const newList: ShoppingListData = { id, title, items: [] };
-
-    this.http.post<ShoppingListData>(this.url, newList).subscribe({
-      next: () => {
-        this.isCreating.set(false);
-        this.successMessage.set('Shopping list created.');
-        this.getLists();
-      },
-      error: (error) => {
-        console.error('Could not create shopping list', error);
-        this.isCreating.set(false);
-        this.errorMessage.set('Could not create the list. Please try again.');
-      },
-    });
-  }
-
   renameList(listId: string, newTitle: string): void {
     const list = this.currentLists().find((current) => current.id === listId);
     if (!list) {
@@ -151,5 +121,35 @@ export class ShoppingListService {
   private clearFeedback(): void {
     this.errorMessage.set('');
     this.successMessage.set('');
+  }
+
+  private saveNewList(title: string, id: string): void {
+    const newList: ShoppingListData = { id, title, items: [] };
+
+    this.http.post<ShoppingListData>(this.url, newList).subscribe({
+      next: () => {
+        this.isCreating.set(false);
+        this.successMessage.set('Shopping list created.');
+        this.getLists();
+      },
+      error: (error) => {
+        console.error('Could not create shopping list', error);
+        this.isCreating.set(false);
+        this.errorMessage.set('Could not create the list. Please try again.');
+      },
+    });
+  }
+
+  private nextListId(lists: ShoppingListData[]): string {
+    let highestId = 0;
+
+    for (const list of lists) {
+      const id = Number(list.id);
+      if (Number.isInteger(id) && id > highestId) {
+        highestId = id;
+      }
+    }
+
+    return String(highestId + 1);
   }
 }
