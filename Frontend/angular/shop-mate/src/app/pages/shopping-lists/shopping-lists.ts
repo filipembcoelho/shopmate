@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ShoppingListService } from '../../services/shopping-list';
 import { ShoppingList } from '../../components/shopping-list/shopping-list';
@@ -9,9 +9,21 @@ import { ShoppingList } from '../../components/shopping-list/shopping-list';
   styleUrl: './shopping-lists.css',
   templateUrl: './shopping-lists.html',
 })
-export class ShoppingLists {
+export class ShoppingLists implements OnInit, OnDestroy {
   readonly listService = inject(ShoppingListService);
   private readonly formBuilder = inject(FormBuilder);
+
+  constructor() {}
+
+  ngOnInit() {
+    this.loadLists();
+    console.log('ShoppingLists component initialized');
+  }
+
+  ngOnDestroy() {
+    // cleanup logic if needed
+    console.log('ShoppingLists component destroyed');
+  }
 
   // readonly renameForm = new FormGroup({
   //   listId: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
