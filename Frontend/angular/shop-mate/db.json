@@ -4,73 +4,45 @@
       "id": "1",
       "title": "Weekly groceries",
       "items": [
-        {
-          "id": 1,
-          "name": "Arroz",
-          "quantity": 3,
-          "purchased": false
-        },
-        {
-          "id": 2,
-          "name": "Leite",
-          "quantity": 2,
-          "purchased": false
-        }
+        { "id": 1, "name": "Milk", "quantity": 2, "unit": 1, "purchased": true },
+        { "id": 2, "name": "Bananas", "quantity": 1, "unit": 2, "purchased": false },
+        { "id": 3, "name": "Rice", "quantity": 1, "unit": 7, "purchased": false },
+        { "id": 4, "name": "Eggs", "quantity": 1, "unit": 7, "purchased": true }
       ]
     },
     {
       "id": "2",
-      "title": "Holidays plans",
+      "title": "Weekend brunch",
       "items": [
-        {
-          "id": 1,
-          "name": "Massa",
-          "quantity": 2,
-          "purchased": false
-        },
-        {
-          "id": 2,
-          "name": "Pão",
-          "quantity": 1,
-          "purchased": false
-        }
+        { "id": 1, "name": "Bread rolls", "quantity": 6, "unit": 1, "purchased": false },
+        { "id": 2, "name": "Coffee", "quantity": 1, "unit": 7, "purchased": true },
+        { "id": 3, "name": "Strawberries", "quantity": 1, "unit": 2, "purchased": false },
+        { "id": 4, "name": "Yogurt", "quantity": 4, "unit": 1, "purchased": false }
       ]
     },
     {
       "id": "3",
-      "title": "Mock API List",
+      "title": "Family barbecue",
       "items": [
-        {
-          "id": 1,
-          "name": "Café",
-          "quantity": 1,
-          "purchased": false
-        }
+        { "id": 1, "name": "Burger buns", "quantity": 2, "unit": 7, "purchased": false },
+        { "id": 2, "name": "Tomatoes", "quantity": 1, "unit": 2, "purchased": false },
+        { "id": 3, "name": "Cheese slices", "quantity": 1, "unit": 7, "purchased": true },
+        { "id": 4, "name": "Charcoal", "quantity": 1, "unit": 7, "purchased": false }
       ]
     },
     {
-      "title": "Christmas List",
-      "items": [],
-      "id": "4"
+      "id": "4",
+      "title": "School supplies",
+      "items": [
+        { "id": 1, "name": "Notebooks", "quantity": 3, "unit": 1, "purchased": false },
+        { "id": 2, "name": "Pens", "quantity": 1, "unit": 7, "purchased": true },
+        { "id": 3, "name": "Glue sticks", "quantity": 2, "unit": 1, "purchased": false },
+        { "id": 4, "name": "Backpack", "quantity": 1, "unit": 1, "purchased": false }
+      ]
     },
     {
-      "title": "Christmas List 3",
-      "items": [],
-      "id": "6"
-    },
-    {
-      "title": "Christmas List 4",
-      "items": [],
-      "id": "7"
-    },
-    {
-      "title": "Christmas List 5",
-      "items": [],
-      "id": "8"
-    },
-    {
-      "id": "9",
-      "title": "Chris List 11",
+      "id": "5",
+      "title": "Next shopping trip",
       "items": []
     }
   ],

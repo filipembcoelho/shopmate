@@ -1,0 +1,48 @@
+<form [formGroup]="itemForm" (ngSubmit)="addItem()" class="border-top pt-3 mt-4">
+  <h4 class="h6 fw-bold">Add an item</h4>
+
+  <label class="form-label" [attr.for]="'item-name-' + listId()">Name</label>
+  <input
+    [id]="'item-name-' + listId()"
+    class="form-control"
+    type="text"
+    placeholder="For example, milk"
+    formControlName="name"
+  />
+  @if (itemForm.controls.name.invalid && itemForm.controls.name.touched) {
+    <p class="small text-danger mt-1">Use at least two characters.</p>
+  }
+
+  <div class="row g-3 mt-1">
+    <div class="col-sm-6">
+      <label class="form-label" [attr.for]="'item-quantity-' + listId()">Quantity</label>
+      <input
+        [id]="'item-quantity-' + listId()"
+        class="form-control"
+        type="number"
+        min="1"
+        formControlName="quantity"
+      />
+      @if (itemForm.controls.quantity.invalid && itemForm.controls.quantity.touched) {
+        <p class="small text-danger mt-1">Enter one or more.</p>
+      }
+    </div>
+    <div class="col-sm-6">
+      <label class="form-label" [attr.for]="'item-unit-' + listId()">Unit</label>
+      <select [id]="'item-unit-' + listId()" class="form-select" formControlName="unit">
+        <option value="1">Each</option>
+        <option value="2">Kilogram</option>
+        <option value="7">Package</option>
+      </select>
+    </div>
+  </div>
+
+  <button
+    class="btn btn-outline-success mt-3"
+    type="submit"
+    [disabled]="itemForm.invalid || listService.isAddingItem()"
+  >
+    <i class="bi bi-plus-circle me-1" aria-hidden="true"></i>
+    {{ listService.isAddingItem() ? 'Adding...' : 'Add item' }}
+  </button>
+</form>

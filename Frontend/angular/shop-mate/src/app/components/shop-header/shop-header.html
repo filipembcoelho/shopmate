@@ -12,9 +12,9 @@
       </span>
     </div>
 
-    <nav>
-      <a class="link-light" routerLink="/">Lists</a>
-      <a class="link-light" routerLink="/lists/new">New List</a>
+    <nav class="d-flex flex-wrap align-items-center gap-2" aria-label="Main navigation">
+      <a class="btn btn-outline-light btn-sm px-3" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">My lists</a>
+      <a class="btn btn-outline-light btn-sm px-3" routerLink="/lists/new" routerLinkActive="active">New list</a>
     </nav>
 
     <div class="row align-items-center g-5 py-5">
@@ -26,16 +26,18 @@
         <p class="lead mb-4">
           Gather the essentials, keep each trip organized, and see what is still left to buy.
         </p>
-        <div class="d-flex flex-wrap gap-3">
-          <div class="shopmate-hero-stat">
-            <strong class="fs-3 d-block">{{ shoppingListService.currentLists().length }}</strong>
-            <span class="small">shopping lists</span>
+        @if (shoppingListService.hasLoaded()) {
+          <div class="d-flex flex-wrap gap-3">
+            <div class="shopmate-hero-stat">
+              <strong class="fs-3 d-block">{{ shoppingListService.currentLists().length }}</strong>
+              <span class="small">shopping lists</span>
+            </div>
+            <div class="shopmate-hero-stat">
+              <strong class="fs-3 d-block">{{ shoppingListService.remainingCount() }}</strong>
+              <span class="small">products remaining</span>
+            </div>
           </div>
-          <div class="shopmate-hero-stat">
-            <strong class="fs-3 d-block">{{ shoppingListService.remainingCount() }}</strong>
-            <span class="small">products remaining</span>
-          </div>
-        </div>
+        }
       </div>
       <div class="col-lg-5 d-none d-lg-flex justify-content-center" aria-hidden="true">
         <div class="shopmate-hero-art d-flex align-items-center justify-content-center">

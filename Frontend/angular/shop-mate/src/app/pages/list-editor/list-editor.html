@@ -1,1 +1,78 @@
-<p>list-editor works!</p>
+<section class="row justify-content-center" aria-labelledby="editor-title">
+  <div class="col-12 col-lg-9 col-xl-7">
+    <a class="link-success text-decoration-none fw-semibold" routerLink="/">
+      <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Back to my lists
+    </a>
+
+    <div class="card shopmate-panel border-0 mt-3">
+      <div class="card-body p-4 p-md-5">
+        <span class="shopmate-icon mb-4" aria-hidden="true">
+          <i class="bi" [class.bi-plus-lg]="listId === null" [class.bi-pencil-square]="listId !== null"></i>
+        </span>
+        <p class="small fw-bold text-success text-uppercase mb-2">
+          {{ listId === null ? 'A fresh start' : 'Keep it tidy' }}
+        </p>
+        <h2 id="editor-title" class="h2 fw-bold mb-2">
+          {{ listId === null ? 'Create a shopping list' : 'Rename this list' }}
+        </h2>
+        <p class="text-body-secondary mb-4">
+          {{ listId === null
+            ? 'Give your next trip a name. You can add products once the list is saved.'
+            : 'Choose a clear name for this list. Its items will stay just as they are.' }}
+        </p>
+
+        @if (isLoading) {
+          <div class="alert alert-light border" role="status">Loading this list...</div>
+        }
+        @if (loadFailed) {
+          <div class="alert alert-danger" role="alert">
+            Could not load this list. Check that JSON Server is running, then try again.
+          </div>
+        }
+        @if (listService.errorMessage() !== '') {
+          <div class="alert alert-danger" role="alert">{{ listService.errorMessage() }}</div>
+        }
+
+        <form [formGroup]="listForm" (ngSubmit)="saveList()">
+          <label for="list-title" class="form-label fw-semibold">List title</label>
+          <input
+            id="list-title"
+            type="text"
+            class="form-control form-control-lg"
+            placeholder="For example, weekend groceries"
+            formControlName="title"
+            [attr.aria-invalid]="listForm.controls.title.invalid && listForm.controls.title.touched"
+            [readOnly]="isLoading || loadFailed"
+          />
+          @if (listForm.controls.title.invalid && listForm.controls.title.touched) {
+            <p class="small text-danger mt-2 mb-0">Use at least two characters.</p>
+          } @else {
+            <p class="small text-body-secondary mt-2 mb-0">A short, useful name is enough.</p>
+          }
+
+          <div class="d-flex flex-wrap gap-2 mt-4">
+            <button
+              type="submit"
+              class="btn btn-success px-4"
+              [disabled]="listForm.invalid || isLoading || loadFailed || listService.isCreating() || listService.isRenaming()"
+            >
+              <i class="bi bi-check2 me-1" aria-hidden="true"></i>
+              {{ listService.isCreating() || listService.isRenaming()
+                ? 'Saving...'
+                : listId === null ? 'Create list' : 'Save new name' }}
+            </button>
+            <a class="btn btn-outline-secondary px-4" routerLink="/">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <p class="small text-body-secondary text-center mt-3 mb-0">
+      @if (listId === null) {
+        After saving, add items directly from your new list card.
+      } @else {
+        Renaming changes only the title, not the items already in the list.
+      }
+    </p>
+  </div>
+</section>

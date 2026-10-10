@@ -1,0 +1,24 @@
+<section class="row justify-content-center" aria-labelledby="not-found-title">
+  <div class="col-12 col-lg-9 col-xl-7">
+    <div class="card shopmate-panel not-found-panel border-0 text-center">
+      <div class="card-body p-4 p-md-5">
+        <span class="shopmate-icon mx-auto mb-4" aria-hidden="true">
+          <i class="bi bi-signpost-split"></i>
+        </span>
+        <p class="small fw-bold text-success text-uppercase mb-2">404 · Page not found</p>
+        <h2 id="not-found-title" class="h2 fw-bold mb-3">This page wandered off the list.</h2>
+        <p class="text-body-secondary mb-3">
+          The address may have changed, or there may be a typo in the link.
+        </p>
+        <p class="small text-body-secondary mb-4">
+          Returning to your shopping lists in
+          <strong class="text-success">{{ secondsRemaining() }}</strong>
+          {{ secondsRemaining() === 1 ? 'second' : 'seconds' }}.
+        </p>
+        <button class="btn btn-success px-4" type="button" (click)="goHome()">
+          <i class="bi bi-house-door me-2" aria-hidden="true"></i>Back to home
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

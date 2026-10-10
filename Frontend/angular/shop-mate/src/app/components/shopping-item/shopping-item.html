@@ -35,7 +35,7 @@
   @if (showDetails()) {
     <p class="small text-body-secondary mt-3 mb-0">
       Quantity:
-      <strong class="text-body">{{ shoppingListItemInner().quantity | quantityLabel }}</strong>
+      <strong class="text-body">{{ shoppingListItemInner().quantity | quantityLabel: shoppingListItemInner().unit }}</strong>
     </p>
   }
 

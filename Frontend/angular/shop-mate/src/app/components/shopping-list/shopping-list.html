@@ -24,5 +24,20 @@
         </div>
       }
     </div>
+
+    <app-add-item-form [listId]="shoppingList().id"></app-add-item-form>
+
+    <div class="d-flex flex-wrap gap-2 border-top mt-4 pt-3">
+      <a class="btn btn-outline-success btn-sm" [routerLink]="['/lists', shoppingList().id, 'edit']">
+        <i class="bi bi-pencil-square me-1" aria-hidden="true"></i>Edit list
+      </a>
+      <button
+        class="btn btn-outline-danger btn-sm"
+        type="button"
+        (click)="deleteRequested.emit(shoppingList().id)"
+      >
+        <i class="bi bi-trash3 me-1" aria-hidden="true"></i>Delete list
+      </button>
+    </div>
   </div>
 </section>
