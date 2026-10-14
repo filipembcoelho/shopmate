@@ -7,6 +7,18 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddShopMateServices(builder.Configuration);
 
+const string angularDevelopment = "AngularDevelopment";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(angularDevelopment, policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -16,9 +28,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
 
-// TODO: Configure CORS when the Angular application
-// starts calling this API from a different origin.
+if (app.Environment.IsDevelopment())
+{
+    app.UseCors(angularDevelopment);
+}
+
 app.MapControllers();
 
 app.Run();

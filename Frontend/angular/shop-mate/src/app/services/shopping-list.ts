@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Service, signal } from '@angular/core';
-import { ShoppingListData } from '../Model/ShoppingListData';
-import { ShoppingListItem } from '../Model/ShoppingListItem';
-import { Observable } from 'rxjs';
+import { ShoppingListApiDto, ShoppingListData } from '../Model/ShoppingListData';
+import { ShoppingListItem, ShoppingListItemApiDto } from '../Model/ShoppingListItem';
+import { map, Observable } from 'rxjs';
 
 @Service()
 export class ShoppingListService {
-  private readonly url = 'http://localhost:3000/shoppingLists';
+  private readonly url = 'https://localhost:7027/api/shopping-lists';
+
   private readonly http = inject(HttpClient);
 
   readonly currentLists = signal<ShoppingListData[]>([]);
@@ -16,6 +17,8 @@ export class ShoppingListService {
   readonly isAddingItem = signal(false);
   readonly errorMessage = signal('');
   readonly successMessage = signal('');
+
+  private readonly demoUserId = 1;
 
   readonly remainingCount = computed(() =>
     this.currentLists().reduce(
@@ -27,20 +30,30 @@ export class ShoppingListService {
   getLists(): void {
     this.errorMessage.set('');
 
-    this.http.get<ShoppingListData[]>(this.url).subscribe({
+    const url = `${this.url}?userId=${this.demoUserId}`;
+
+    this.http.get<ShoppingListApiDto[]>(url).subscribe({
       next: (lists) => {
-        this.currentLists.set(lists);
+        const convertedLists: ShoppingListData[] = [];
+
+        for (const list of lists) {
+          convertedLists.push(this.fromApi(list));
+        }
+
+        this.currentLists.set(convertedLists);
         this.hasLoaded.set(true);
       },
       error: (error) => {
         console.error('Could not load shopping lists', error);
-        this.errorMessage.set('Could not load the lists. Check that JSON Server is running.');
+        this.errorMessage.set('Could not load the lists. Check that the API is running.');
       },
     });
   }
 
   getList(listId: string): Observable<ShoppingListData> {
-    return this.http.get<ShoppingListData>(this.url + '/' + listId);
+    const url = `${this.url}/${listId}?userId=${this.demoUserId}`;
+
+    return this.http.get<ShoppingListApiDto>(url).pipe(map((list) => this.fromApi(list)));
   }
 
   togglePurchased(event: { listId: string; itemId: number }): void {
@@ -66,16 +79,23 @@ export class ShoppingListService {
     this.clearFeedback();
     this.isCreating.set(true);
 
-    this.http.get<ShoppingListData[]>(this.url).subscribe({
-      next: (lists) => {
-        this.saveNewList(title.trim(), this.nextListId(lists), onSaved);
-      },
-      error: (error) => {
-        console.error('Could not check shopping list IDs', error);
-        this.isCreating.set(false);
-        this.errorMessage.set('Could not check the existing lists. Please try again.');
-      },
-    });
+    this.http
+      .post<ShoppingListApiDto>(this.url, {
+        name: title.trim(),
+        ownerId: this.demoUserId,
+      })
+      .subscribe({
+        next: () => {
+          this.isCreating.set(false);
+          this.successMessage.set('Shopping list created.');
+          onSaved();
+        },
+        error: (error) => {
+          console.error('Could not create shopping list', error);
+          this.isCreating.set(false);
+          this.errorMessage.set('Could not create the list. Please try again.');
+        },
+      });
   }
 
   renameList(listId: string, newTitle: string, onSaved: () => void): void {
@@ -83,33 +103,24 @@ export class ShoppingListService {
     this.clearFeedback();
     this.isRenaming.set(true);
 
-    this.getList(listId).subscribe({
-      next: (list) => {
-        const updatedList: ShoppingListData = {
-          id: list.id,
-          title: newTitle.trim(),
-          items: list.items,
-        };
+    const url = `${this.url}/${listId}?userId=${this.demoUserId}`;
 
-        this.http.put<ShoppingListData>(this.url + '/' + listId, updatedList).subscribe({
-          next: () => {
-            this.isRenaming.set(false);
-            this.successMessage.set('Shopping list renamed.');
-            onSaved();
-          },
-          error: (error) => {
-            console.error('Could not rename shopping list', error);
-            this.isRenaming.set(false);
-            this.errorMessage.set('Could not rename the list. Please try again.');
-          },
-        });
-      },
-      error: (error) => {
-        console.error('Could not load shopping list for rename', error);
-        this.isRenaming.set(false);
-        this.errorMessage.set('Could not load the list to rename.');
-      },
-    });
+    this.http
+      .put<ShoppingListApiDto>(url, {
+        name: newTitle.trim(),
+      })
+      .subscribe({
+        next: () => {
+          this.isRenaming.set(false);
+          this.successMessage.set('Shopping list renamed.');
+          onSaved();
+        },
+        error: (error) => {
+          console.error('Could not rename shopping list', error);
+          this.isRenaming.set(false);
+          this.errorMessage.set('Could not rename the list. Please try again.');
+        },
+      });
   }
 
   deleteList(listId: string): void {
@@ -121,14 +132,16 @@ export class ShoppingListService {
 
     this.clearFeedback();
 
-    this.http.delete<void>(this.url + '/' + listId).subscribe({
+    const url = `${this.url}/${listId}?userId=${this.demoUserId}`;
+
+    this.http.delete<void>(url).subscribe({
       next: () => {
-        this.successMessage.set('Shopping list deleted.');
+        this.successMessage.set('Shopping list archived.');
         this.getLists();
       },
       error: (error) => {
-        console.error('Could not delete shopping list', error);
-        this.errorMessage.set('Could not delete the list. Please try again.');
+        console.error('Could not archive shopping list', error);
+        this.errorMessage.set('Could not archive the list. Please try again.');
       },
     });
   }
@@ -145,49 +158,27 @@ export class ShoppingListService {
     this.clearFeedback();
     this.isAddingItem.set(true);
 
-    this.getList(listId).subscribe({
-      next: (list) => {
-        let highestItemId = 0;
-        for (const item of list.items) {
-          if (item.id > highestItemId) highestItemId = item.id;
-        }
+    const url = `${this.url}/${listId}/items?userId=${this.demoUserId}`;
 
-        const newItem: ShoppingListItem = {
-          id: highestItemId + 1,
-          name,
-          quantity,
-          unit,
-          purchased: false,
-        };
-        const items = list.items.slice();
-        items.push(newItem);
-
-        const updatedList: ShoppingListData = {
-          id: list.id,
-          title: list.title,
-          items,
-        };
-
-        this.http.put<ShoppingListData>(this.url + '/' + listId, updatedList).subscribe({
-          next: () => {
-            this.isAddingItem.set(false);
-            this.successMessage.set('Item added.');
-            this.getLists();
-            onSaved();
-          },
-          error: (error) => {
-            console.error('Could not add item', error);
-            this.isAddingItem.set(false);
-            this.errorMessage.set('Could not add the item. Please try again.');
-          },
-        });
-      },
-      error: (error) => {
-        console.error('Could not load list for item', error);
-        this.isAddingItem.set(false);
-        this.errorMessage.set('Could not load the list for this item.');
-      },
-    });
+    this.http
+      .post<ShoppingListItemApiDto>(url, {
+        name: name.trim(),
+        quantity,
+        unit,
+      })
+      .subscribe({
+        next: () => {
+          this.isAddingItem.set(false);
+          this.successMessage.set('Item added.');
+          this.getLists();
+          onSaved();
+        },
+        error: (error) => {
+          console.error('Could not add item', error);
+          this.isAddingItem.set(false);
+          this.errorMessage.set('Could not add the item. Please try again.');
+        },
+      });
   }
 
   private clearFeedback(): void {
@@ -195,33 +186,22 @@ export class ShoppingListService {
     this.successMessage.set('');
   }
 
-  private saveNewList(title: string, id: string, onSaved: () => void): void {
-    const newList: ShoppingListData = { id, title, items: [] };
+  private fromApi(list: ShoppingListApiDto): ShoppingListData {
+    const items: ShoppingListItem[] = [];
 
-    this.http.post<ShoppingListData>(this.url, newList).subscribe({
-      next: () => {
-        this.isCreating.set(false);
-        this.successMessage.set('Shopping list created.');
-        onSaved();
-      },
-      error: (error) => {
-        console.error('Could not create shopping list', error);
-        this.isCreating.set(false);
-        this.errorMessage.set('Could not create the list. Please try again.');
-      },
-    });
-  }
+    const id = String(list.id);
+    const title = list.name;
 
-  private nextListId(lists: ShoppingListData[]): string {
-    let highestId = 0;
-
-    for (const list of lists) {
-      const id = Number(list.id);
-      if (Number.isInteger(id) && id > highestId) {
-        highestId = id;
-      }
+    for (const item of list.items) {
+      items.push({
+        id: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        unit: item.unit,
+        purchased: item.isCompleted,
+      });
     }
 
-    return String(highestId + 1);
+    return { id, title, items };
   }
 }

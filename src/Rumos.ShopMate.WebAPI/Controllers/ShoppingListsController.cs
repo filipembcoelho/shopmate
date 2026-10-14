@@ -35,7 +35,7 @@ public class ShoppingListsController(IShoppingListService service) : BaseControl
     }
 
     [HttpGet("{listId:int}", Name = "GetShoppingListById")]
-    public ActionResult<ShoppingListDto> GetById(int listId, int userId)
+    public ActionResult<ShoppingListDto> GetById([FromRoute] int listId, [FromQuery] int userId)
     {
         try
         {
