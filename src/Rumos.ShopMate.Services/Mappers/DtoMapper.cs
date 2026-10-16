@@ -12,7 +12,8 @@ internal static class DtoMapper
         {
             Id = user.Id,
             FullName = user.Name.ToString(),
-            Username = user.Account.Username
+            Username = user.Account.Username,
+            Role = user.Account.Role
         };
     }
 

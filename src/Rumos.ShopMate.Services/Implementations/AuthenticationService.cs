@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Rumos.ShopMate.Data;
+using Rumos.ShopMate.Domain.Constants;
 using Rumos.ShopMate.Domain.Model;
 using Rumos.ShopMate.Services.Dtos;
 using Rumos.ShopMate.Services.Exceptions;
@@ -8,7 +9,8 @@ using Rumos.ShopMate.Services.Mappers;
 
 namespace Rumos.ShopMate.Services.Implementations;
 
-public class AuthenticationService(ApplicationContext context) : IAuthenticationService
+public class AuthenticationService(ApplicationContext context, IPasswordService passwordService)
+    : IAuthenticationService
 {
     public UserDto Login(string username, string password)
     {
@@ -20,14 +22,24 @@ public class AuthenticationService(ApplicationContext context) : IAuthentication
             .Include(existingUser => existingUser.Account)
             .AsNoTracking()
             .SingleOrDefault(existingUser =>
-                existingUser.Account.Username == normalizedUsername &&
-                existingUser.Account.Password == password);
+                existingUser.Account.Username == normalizedUsername);
 
         if (user == null)
         {
             throw new InvalidCredentialsException("Invalid username or password.");
         }
+        
+        var result = passwordService.VerifyPassword(user.Account, password);
+        
+        if (!result)
+        {
+            throw new InvalidCredentialsException("Invalid username or password.");
+        }
 
+        var newPass = passwordService.HashPassword(user.Account, password);
+        user.Account.PasswordHash = newPass;
+        context.SaveChanges();
+        
         return DtoMapper.ToDto(user);
     }
 
@@ -55,6 +67,8 @@ public class AuthenticationService(ApplicationContext context) : IAuthentication
             userDto.FullName,
             normalizedUsername,
             userDto.Password);
+        user.Account.PasswordHash = passwordService.HashPassword(user.Account, userDto.Password);
+        user.Account.Role = AppRoles.User;
 
         context.Users.Add(user);
         context.SaveChanges();

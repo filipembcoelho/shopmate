@@ -19,7 +19,7 @@ export class ShoppingListService {
   readonly errorMessage = signal('');
   readonly successMessage = signal('');
 
-  private readonly demoUserId = 1;
+  private readonly demoUserId = 2;
 
   readonly remainingCount = computed(() =>
     this.currentLists().reduce(

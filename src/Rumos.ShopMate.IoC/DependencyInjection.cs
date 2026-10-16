@@ -16,6 +16,8 @@ public static class DependencyInjection
         services.AddScoped<IProductCatalogService, ProductCatalogService>();
         services.AddScoped<IShoppingListService, ShoppingListService>();
         
+        services.AddScoped<IPasswordService, PasswordService>();
+        
         var cs = configuration.GetConnectionString("ShopMate");
         
         services.AddDbContext<ApplicationContext>(options =>

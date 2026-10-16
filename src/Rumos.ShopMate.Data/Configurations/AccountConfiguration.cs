@@ -19,8 +19,12 @@ internal sealed class AccountConfiguration : IEntityTypeConfiguration<Account>
         builder.HasIndex(account => account.Username)
             .IsUnique();
 
-        builder.Property(account => account.Password)
-            .HasMaxLength(200)
+        builder.Property(account => account.PasswordHash)
+            .HasMaxLength(1000)
+            .IsRequired();
+
+        builder.Property(account => account.Role)
+            .HasMaxLength(20)
             .IsRequired();
 
         AuditableConfiguration.Configure(builder);

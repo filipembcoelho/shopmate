@@ -9,7 +9,8 @@ public class Account : AuditableEntity
     private const string SpecialCharacters = "!@#$%^&*()-_=+[]{};:,.<>?/";
 
     public string Username { get; set; }
-    public string Password { get; set; }
+    public string PasswordHash { get; set; }
+    public string Role { get; set; }
     public int UserId { get; set; }
     public User User { get; set; }
 
@@ -89,7 +90,7 @@ public class Account : AuditableEntity
             throw new InvalidAccountException("Password must contain at least one special character.");
         }
 
-        Password = password;
+        PasswordHash = password;
     }
 
     private bool HasMinimumLength(string password)
