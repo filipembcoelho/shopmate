@@ -25,8 +25,7 @@
       <p class="small fw-bold text-success text-uppercase mb-2">Everything in one place</p>
       <h2 id="lists-title" class="h2 fw-bold mb-1">My shopping lists</h2>
       <p class="text-body-secondary mb-0">
-        A clear view of every list and every item left to buy. Item checkmarks stay local until you
-        load again.
+        A clear view of every list and every item left to buy. Item changes are saved to ShopMate.
       </p>
     </div>
     <span class="badge rounded-pill text-bg-success fs-6 px-3 py-2">
@@ -50,6 +49,7 @@
           <app-shopping-list
             class="d-block h-100"
             [shoppingList]="list"
+            [isUpdatingItem]="listService.isUpdatingItem()"
             (toggleRequested)="togglePurchased($event)"
             (deleteRequested)="deleteList($event)"
           ></app-shopping-list>

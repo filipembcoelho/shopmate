@@ -12,6 +12,7 @@ export class ShoppingItem {
   showDetails = signal(false);
 
   shoppingListItemInner = input.required<ShoppingListItem>();
+  isUpdatingItem = input(false);
 
   toggleRequested = output<number>();
 

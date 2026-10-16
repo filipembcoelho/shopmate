@@ -35,7 +35,9 @@
   @if (showDetails()) {
     <p class="small text-body-secondary mt-3 mb-0">
       Quantity:
-      <strong class="text-body">{{ shoppingListItemInner().quantity | quantityLabel: shoppingListItemInner().unit }}</strong>
+      <strong class="text-body">{{
+        shoppingListItemInner().quantity | quantityLabel: shoppingListItemInner().unit
+      }}</strong>
     </p>
   }
 
@@ -43,7 +45,12 @@
     <button type="button" class="btn btn-outline-secondary btn-sm" (click)="toggleDetails()">
       {{ showDetails() ? 'Hide details' : 'Show details' }}
     </button>
-    <button type="button" class="btn btn-outline-success btn-sm" (click)="requestToggle()">
+    <button
+      type="button"
+      class="btn btn-outline-success btn-sm"
+      [disabled]="isUpdatingItem()"
+      (click)="requestToggle()"
+    >
       <i class="bi bi-check2 me-1" aria-hidden="true"></i>
       {{ shoppingListItemInner().purchased ? 'Mark as needed' : 'Mark as purchased' }}
     </button>

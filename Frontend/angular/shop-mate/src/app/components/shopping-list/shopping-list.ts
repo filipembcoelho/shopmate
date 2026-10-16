@@ -11,6 +11,7 @@ import { RouterLink } from '@angular/router';
 })
 export class ShoppingList {
   shoppingList = input.required<ShoppingListData>();
+  isUpdatingItem = input(false);
 
   toggleRequested = output<{ listId: string; itemId: number }>();
   deleteRequested = output<string>();

@@ -15,6 +15,7 @@ export class ShoppingListService {
   readonly isCreating = signal(false);
   readonly isRenaming = signal(false);
   readonly isAddingItem = signal(false);
+  readonly isUpdatingItem = signal(false);
   readonly errorMessage = signal('');
   readonly successMessage = signal('');
 
@@ -57,20 +58,52 @@ export class ShoppingListService {
   }
 
   togglePurchased(event: { listId: string; itemId: number }): void {
-    this.currentLists.update((lists) => {
-      for (const list of lists) {
-        if (list.id !== event.listId) continue;
+    if (this.isUpdatingItem()) return;
 
-        for (const item of list.items) {
-          if (item.id !== event.itemId) continue;
+    const list = this.currentLists().find((current) => current.id === event.listId);
+    const item = list?.items.find((current) => current.id === event.itemId);
 
-          item.purchased = !item.purchased;
-          return lists.slice();
-        }
-      }
+    if (!item || item.unit === undefined) {
+      this.errorMessage.set('Could not update this item. Reload the lists and try again.');
+      return;
+    }
 
-      return lists;
-    });
+    this.clearFeedback();
+    this.isUpdatingItem.set(true);
+
+    const url = `${this.url}/${event.listId}/items/${event.itemId}?userId=${this.demoUserId}`;
+
+    this.http
+      .put<ShoppingListItemApiDto>(url, {
+        name: item.name,
+        quantity: item.quantity,
+        unit: item.unit,
+        isCompleted: !item.purchased,
+      })
+      .subscribe({
+        next: (updatedItem) => {
+          this.currentLists.update((lists) => {
+            for (const currentList of lists) {
+              if (currentList.id !== event.listId) continue;
+
+              for (const currentItem of currentList.items) {
+                if (currentItem.id !== event.itemId) continue;
+
+                currentItem.purchased = updatedItem.isCompleted;
+                return lists.slice();
+              }
+            }
+
+            return lists;
+          });
+          this.isUpdatingItem.set(false);
+        },
+        error: (error) => {
+          console.error('Could not update shopping list item', error);
+          this.isUpdatingItem.set(false);
+          this.errorMessage.set('Could not update the item. Please try again.');
+        },
+      });
   }
 
   createList(title: string, onSaved: () => void): void {
@@ -146,13 +179,7 @@ export class ShoppingListService {
     });
   }
 
-  addItem(
-    listId: string,
-    name: string,
-    quantity: number,
-    unit: number,
-    onSaved: () => void,
-  ): void {
+  addItem(listId: string, name: string, quantity: number, unit: number, onSaved: () => void): void {
     if (this.isAddingItem()) return;
 
     this.clearFeedback();
