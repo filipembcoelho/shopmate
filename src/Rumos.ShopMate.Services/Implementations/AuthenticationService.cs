@@ -20,7 +20,6 @@ public class AuthenticationService(ApplicationContext context, IPasswordService 
         var normalizedUsername = username.Trim().ToLower();
         var user = context.Users
             .Include(existingUser => existingUser.Account)
-            .AsNoTracking()
             .SingleOrDefault(existingUser =>
                 existingUser.Account.Username == normalizedUsername);
 

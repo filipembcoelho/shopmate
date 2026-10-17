@@ -1,0 +1,28 @@
+<section class="card mx-auto p-4" style="max-width: 28rem" aria-labelledby="register-title">
+  <h2 id="register-title">Create an account</h2>
+  @if (errorMessage()) {
+    <p class="alert alert-danger" role="alert">{{ errorMessage() }}</p>
+  }
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="mb-3">
+      <label class="form-label" for="register-fullname">Full name</label>
+      <input class="form-control" id="register-fullname" formControlName="fullName"
+        autocomplete="name" required />
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="register-username">Username</label>
+      <input class="form-control" id="register-username" formControlName="username"
+        autocomplete="username" required />
+    </div>
+    <div class="mb-3">
+      <label class="form-label" for="register-password">Password</label>
+      <input class="form-control" id="register-password" type="password" formControlName="password"
+        autocomplete="new-password" aria-describedby="password-help" required />
+      <p id="password-help" class="form-text">At least 8 characters, including uppercase, lowercase, a number, and a special character such as !.</p>
+    </div>
+    <button class="btn btn-primary" type="submit" [disabled]="form.invalid || isSubmitting()">
+      {{ isSubmitting() ? 'Creating account…' : 'Create account' }}
+    </button>
+    <a class="btn btn-link" routerLink="/login">Back to sign in</a>
+  </form>
+</section>

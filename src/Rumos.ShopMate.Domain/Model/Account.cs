@@ -1,3 +1,4 @@
+using Rumos.ShopMate.Domain.Constants;
 using Rumos.ShopMate.Domain.Exceptions;
 using Rumos.ShopMate.Domain.Model.Common;
 
@@ -9,8 +10,8 @@ public class Account : AuditableEntity
     private const string SpecialCharacters = "!@#$%^&*()-_=+[]{};:,.<>?/";
 
     public string Username { get; set; }
-    public string PasswordHash { get; set; }
-    public string Role { get; set; }
+    public string PasswordHash { get; set; } = string.Empty;
+    public string Role { get; set; } = AppRoles.User;
     public int UserId { get; set; }
     public User User { get; set; }
 
@@ -22,7 +23,7 @@ public class Account : AuditableEntity
     public Account(string username, string password) : this()
     {
         ChangeUsername(username);
-        ChangePassword(password);
+        ValidatePassword(password);
     }
 
     public void ChangeUsername(string username)
@@ -58,7 +59,7 @@ public class Account : AuditableEntity
         Username = username.Trim().ToLower();
     }
 
-    public void ChangePassword(string password)
+    private void ValidatePassword(string password)
     {
         if (string.IsNullOrWhiteSpace(password))
         {
@@ -90,7 +91,6 @@ public class Account : AuditableEntity
             throw new InvalidAccountException("Password must contain at least one special character.");
         }
 
-        PasswordHash = password;
     }
 
     private bool HasMinimumLength(string password)

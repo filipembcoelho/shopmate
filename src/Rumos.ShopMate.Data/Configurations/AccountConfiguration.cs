@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Rumos.ShopMate.Domain.Constants;
 using Rumos.ShopMate.Domain.Model;
 
 namespace Rumos.ShopMate.Data.Configurations;
@@ -25,6 +26,7 @@ internal sealed class AccountConfiguration : IEntityTypeConfiguration<Account>
 
         builder.Property(account => account.Role)
             .HasMaxLength(20)
+            .HasDefaultValue(AppRoles.User)
             .IsRequired();
 
         AuditableConfiguration.Configure(builder);

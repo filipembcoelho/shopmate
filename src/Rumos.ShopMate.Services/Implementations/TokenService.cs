@@ -14,14 +14,14 @@ public class TokenService(IConfiguration configuration) : ITokenService
         var keySettings = configuration["JwtSettings:Key"];
         var expirationSettings = configuration.GetValue<int>("JwtSettings:ExpirationInMinutes");
 
-        if (keySettings == null || expirationSettings <= 60)
+        if (string.IsNullOrWhiteSpace(keySettings) || expirationSettings <= 0)
         {
             throw new ArgumentException(nameof(keySettings));
         }
 
-        var keyBites = Convert.FromBase64String(keySettings);
+        var keyBytes = Convert.FromBase64String(keySettings);
 
-        var key = new SymmetricSecurityKey(keyBites);
+        var key = new SymmetricSecurityKey(keyBytes);
 
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 

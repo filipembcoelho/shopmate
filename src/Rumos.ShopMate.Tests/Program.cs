@@ -11,7 +11,7 @@ var failedTests = 0;
 StrongPasswordCreatesAccount();
 PasswordWithoutCapitalLetterIsRejected();
 PasswordWithoutSpecialCharacterIsRejected();
-MemorySeedCreatesUsersWithValidPasswords();
+MemorySeedCreatesUsersWithoutStoredPasswords();
 CategoryUtilsDetectsDairyItems();
 CategoryUtilsUsesOtherForUnknownItems();
 CategoryUtilsDetectsArrozAsPantry();
@@ -30,6 +30,7 @@ ShoppingListItemRejectsNullCategory();
 EfModelIncludesShopMateEntities();
 SeedDataAddsInitialAggregate();
 failedTests += ServiceTests.Run();
+failedTests += AuthenticationRegressionTests.Run();
 failedTests += ConsoleDependencyTests.Run();
 
 if (failedTests > 0)
@@ -51,7 +52,7 @@ void StrongPasswordCreatesAccount()
         var account = new Account("student", "ShopMate1!");
 
         AssertEqual("student", account.Username, "Username should be normalized.");
-        AssertEqual("ShopMate1!", account.Password, "Password should be stored.");
+        AssertEqual(string.Empty, account.PasswordHash, "Domain construction must not retain the supplied password.");
 
         PassTest(testName);
     }
@@ -117,9 +118,9 @@ void PasswordWithoutSpecialCharacterIsRejected()
     }
 }
 
-void MemorySeedCreatesUsersWithValidPasswords()
+void MemorySeedCreatesUsersWithoutStoredPasswords()
 {
-    var testName = "Memory seed creates users with valid passwords";
+    var testName = "Memory seed creates users without stored passwords";
 
     try
     {
@@ -129,7 +130,7 @@ void MemorySeedCreatesUsersWithValidPasswords()
 
         foreach (var user in seedData.Users)
         {
-            AssertTrue(user.Account.Password.Length >= 8, "Seed password should have at least 8 characters.");
+            AssertEqual(string.Empty, user.Account.PasswordHash, "Domain fixtures must not store plaintext credentials.");
         }
 
         AssertTrue(seedData.ShoppingLists.Count >= 2, "Seed should create at least two shopping lists.");

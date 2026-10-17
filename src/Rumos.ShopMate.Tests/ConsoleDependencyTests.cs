@@ -74,9 +74,9 @@ public static class ConsoleDependencyTests
             using var context = new ApplicationContext(options);
 
             IAuthenticationService authenticationService =
-                new AuthenticationService(context);
+                new AuthenticationService(context, new PasswordService());
             IUserService userService =
-                new UserService(context);
+                new UserService(context, new PasswordService());
             IShoppingListService shoppingListService =
                 new ShoppingListService(context);
             IProductCatalogService productCatalogService =

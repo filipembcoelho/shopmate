@@ -15,6 +15,11 @@ public class PasswordService : IPasswordService
 
     public bool VerifyPassword(Account account, string password)
     {
+        if (string.IsNullOrWhiteSpace(account.PasswordHash))
+        {
+            return false;
+        }
+
         var result = _hasher.VerifyHashedPassword(account, account.PasswordHash, password);
 
         return result != PasswordVerificationResult.Failed;

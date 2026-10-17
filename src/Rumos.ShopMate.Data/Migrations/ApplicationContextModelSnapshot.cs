@@ -44,8 +44,10 @@ namespace Rumos.ShopMate.Data.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(20)")
+                        .HasDefaultValue("User");
 
                     b.Property<DateTime>("Updated")
                         .HasColumnType("datetime2");

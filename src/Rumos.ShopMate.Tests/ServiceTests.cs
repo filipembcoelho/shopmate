@@ -93,10 +93,11 @@ public static class ServiceTests
     private static void LoginReturnsASafeUserDto()
     {
         using var context = CreateContext();
-        var user = new User("Test User", "testuser", "Testing1!");
-        context.Users.Add(user);
-        context.SaveChanges();
-        var service = new AuthenticationService(context);
+        var service = new AuthenticationService(context, new PasswordService());
+        var user = service.Register(new RegisterUserDto
+        {
+            FullName = "Test User", Username = "testuser", Password = "Testing1!"
+        });
 
         var userDto = service.Login(" TESTUSER ", "Testing1!");
         AssertEqual(user.Id, userDto.Id, "Login should return the persisted user ID.");
@@ -108,9 +109,11 @@ public static class ServiceTests
     private static void LoginRejectsInvalidCredentials()
     {
         using var context = CreateContext();
-        context.Users.Add(new User("Test User", "testuser", "Testing1!"));
-        context.SaveChanges();
-        var service = new AuthenticationService(context);
+        var service = new AuthenticationService(context, new PasswordService());
+        service.Register(new RegisterUserDto
+        {
+            FullName = "Test User", Username = "testuser", Password = "Testing1!"
+        });
 
         AssertInvalidCredentialsException(
             () => service.Login("testuser", "Wrong1!"),
@@ -120,7 +123,7 @@ public static class ServiceTests
     private static void LoginValidatesRequiredUsername()
     {
         using var context = CreateContext();
-        var service = new AuthenticationService(context);
+        var service = new AuthenticationService(context, new PasswordService());
 
         AssertServiceException(
             () => service.Login("", "Testing1!"),
@@ -130,7 +133,7 @@ public static class ServiceTests
     private static void RegisterPersistsAUser()
     {
         using var context = CreateContext();
-        var service = new AuthenticationService(context);
+        var service = new AuthenticationService(context, new PasswordService());
         var registerUserDto = new RegisterUserDto
         {
             FullName = "New User",
@@ -151,7 +154,7 @@ public static class ServiceTests
         using var context = CreateContext();
         context.Users.Add(new User("Existing User", "existing", "Testing1!"));
         context.SaveChanges();
-        var service = new AuthenticationService(context);
+        var service = new AuthenticationService(context, new PasswordService());
         var registerUserDto = new RegisterUserDto
         {
             FullName = "Another User",
@@ -167,7 +170,7 @@ public static class ServiceTests
     private static void RegisterValidatesRequiredData()
     {
         using var context = CreateContext();
-        var service = new AuthenticationService(context);
+        var service = new AuthenticationService(context, new PasswordService());
         var registerUserDto = new RegisterUserDto
         {
             FullName = "",
@@ -185,7 +188,7 @@ public static class ServiceTests
         using var context = CreateContext();
         context.Users.Add(new User("Existing User", "jdoe", "Testing1!"));
         context.SaveChanges();
-        var service = new UserService(context);
+        var service = new UserService(context, new PasswordService());
 
         var result = service.SuggestUsername("John Doe");
 
@@ -195,7 +198,7 @@ public static class ServiceTests
     private static void SuggestUsernameValidatesFullName()
     {
         using var context = CreateContext();
-        var service = new UserService(context);
+        var service = new UserService(context, new PasswordService());
 
         AssertServiceException(
             () => service.SuggestUsername(" "),
@@ -208,7 +211,7 @@ public static class ServiceTests
         var user = new User("Test User", "testuser", "Testing1!");
         context.Users.Add(user);
         context.SaveChanges();
-        var service = new UserService(context);
+        var service = new UserService(context, new PasswordService());
 
         var userDto = service.GetByUsername(" TESTUSER ");
         AssertEqual(user.Id, userDto.Id, "The lookup should return the persisted user ID.");
@@ -219,7 +222,7 @@ public static class ServiceTests
     private static void GetByUsernameRejectsAnUnknownUser()
     {
         using var context = CreateContext();
-        var service = new UserService(context);
+        var service = new UserService(context, new PasswordService());
 
         AssertServiceNotFoundException(
             () => service.GetByUsername("missing"),
