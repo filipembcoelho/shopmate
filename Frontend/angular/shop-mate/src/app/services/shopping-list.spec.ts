@@ -31,7 +31,7 @@ describe('ShoppingListService item updates', () => {
 
     expect(service.currentLists()[0].items[0].purchased).toBe(false);
 
-    const complete = http.expectOne('https://localhost:7027/api/shopping-lists/3/items/4?userId=1');
+    const complete = http.expectOne('https://localhost:7027/api/shopping-lists/3/items/4?userId=2');
     expect(complete.request.method).toBe('PUT');
     expect(complete.request.body).toEqual({
       name: 'Milk',
@@ -45,7 +45,7 @@ describe('ShoppingListService item updates', () => {
 
     service.togglePurchased({ listId: '3', itemId: 4 });
 
-    const reopen = http.expectOne('https://localhost:7027/api/shopping-lists/3/items/4?userId=1');
+    const reopen = http.expectOne('https://localhost:7027/api/shopping-lists/3/items/4?userId=2');
     expect(reopen.request.body.isCompleted).toBe(false);
     reopen.flush({ id: 4, name: 'Milk', quantity: 2, unit: 1, isCompleted: false });
 
@@ -55,7 +55,7 @@ describe('ShoppingListService item updates', () => {
   it('leaves the item unchanged and shows an error when saving fails', () => {
     service.togglePurchased({ listId: '3', itemId: 4 });
 
-    const request = http.expectOne('https://localhost:7027/api/shopping-lists/3/items/4?userId=1');
+    const request = http.expectOne('https://localhost:7027/api/shopping-lists/3/items/4?userId=2');
     request.flush({ message: 'Server error' }, { status: 500, statusText: 'Server error' });
 
     expect(service.currentLists()[0].items[0].purchased).toBe(false);
