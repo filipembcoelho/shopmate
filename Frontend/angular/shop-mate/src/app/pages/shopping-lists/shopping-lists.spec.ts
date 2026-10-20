@@ -18,7 +18,7 @@ describe('ShoppingLists', () => {
     component = fixture.componentInstance;
     await fixture.whenStable();
     TestBed.inject(HttpTestingController)
-      .expectOne('https://localhost:7027/api/shopping-lists?userId=2')
+      .expectOne('https://localhost:7027/api/shopping-lists')
       .flush([]);
   });
 

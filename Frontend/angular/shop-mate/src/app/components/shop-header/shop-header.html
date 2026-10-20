@@ -13,10 +13,15 @@
     </div>
 
     <nav class="d-flex flex-wrap align-items-center gap-2" aria-label="Main navigation">
-      <a class="btn btn-outline-light btn-sm px-3" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">My lists</a>
-      <a class="btn btn-outline-light btn-sm px-3" routerLink="/lists/new" routerLinkActive="active">New list</a>
-      <a class="btn btn-outline-light btn-sm px-3" routerLink="/login" routerLinkActive="active">Sign in</a>
-      <a class="btn btn-outline-light btn-sm px-3" routerLink="/register" routerLinkActive="active">Create account</a>
+      @if (auth.user(); as user) {
+        <a class="btn btn-outline-light btn-sm px-3" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">My lists</a>
+        <a class="btn btn-outline-light btn-sm px-3" routerLink="/lists/new" routerLinkActive="active">New list</a>
+        <span class="ms-auto">Hello, {{ user.fullName }}</span>
+        <button class="btn btn-outline-light btn-sm px-3" type="button" (click)="auth.logout()">Sign out</button>
+      } @else {
+        <a class="btn btn-outline-light btn-sm px-3" routerLink="/login" routerLinkActive="active">Sign in</a>
+        <a class="btn btn-outline-light btn-sm px-3" routerLink="/register" routerLinkActive="active">Create account</a>
+      }
     </nav>
 
     <div class="row align-items-center g-5 py-5">

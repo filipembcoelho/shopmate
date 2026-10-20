@@ -76,7 +76,7 @@ public static class ConsoleDependencyTests
             IAuthenticationService authenticationService =
                 new AuthenticationService(context, new PasswordService());
             IUserService userService =
-                new UserService(context, new PasswordService());
+                new UserService(context);
             IShoppingListService shoppingListService =
                 new ShoppingListService(context);
             IProductCatalogService productCatalogService =

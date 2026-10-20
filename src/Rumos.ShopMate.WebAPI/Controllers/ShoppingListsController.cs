@@ -3,21 +3,22 @@ using Rumos.ShopMate.Domain.Exceptions;
 using Rumos.ShopMate.Services.Dtos;
 using Rumos.ShopMate.Services.Exceptions;
 using Rumos.ShopMate.Services.Interfaces;
+using Rumos.ShopMate.WebAPI.Security;
 
 namespace Rumos.ShopMate.WebAPI.Controllers;
 
 [Route("api/shopping-lists")]
-public class ShoppingListsController(IShoppingListService service) : BaseController
+public class ShoppingListsController(IShoppingListService service, IUserResolverService currentUser)
+    : BaseController
 {
     // TODO: Move repeated exception handling to middleware
     // when exception middleware is introduced.
-    // TODO: Read the current user ID from the authenticated identity
-    // after JWT authentication is introduced.
     [HttpGet]
-    public ActionResult<IReadOnlyList<ShoppingListDto>> GetForUser(int userId)
+    public ActionResult<IReadOnlyList<ShoppingListDto>> GetForUser()
     {
         try
         {
+            var userId = currentUser.GetById();
             return Ok(service.GetForUser(userId));
         }
         catch (ServiceNotFoundException ex)
@@ -35,10 +36,11 @@ public class ShoppingListsController(IShoppingListService service) : BaseControl
     }
 
     [HttpGet("{listId:int}", Name = "GetShoppingListById")]
-    public ActionResult<ShoppingListDto> GetById([FromRoute] int listId, [FromQuery] int userId)
+    public ActionResult<ShoppingListDto> GetById([FromRoute] int listId)
     {
         try
         {
+            var userId = currentUser.GetById();
             return Ok(service.GetById(listId, userId));
         }
         catch (ServiceNotFoundException ex)
@@ -56,15 +58,20 @@ public class ShoppingListsController(IShoppingListService service) : BaseControl
     }
 
     [HttpPost]
-    public ActionResult<ShoppingListDto> Create(CreateShoppingListDto shoppingListDto)
+    public ActionResult<ShoppingListDto> Create(CreateListRequest request)
     {
         try
         {
-            var shoppingList = service.Create(shoppingListDto);
+            var userId = currentUser.GetById();
+            var shoppingList = service.Create(new CreateShoppingListDto
+            {
+                Name = request.Name,
+                OwnerId = userId
+            });
 
             return CreatedAtRoute(
                 "GetShoppingListById",
-                new { listId = shoppingList.Id, userId = shoppingList.Owner.Id },
+                new { listId = shoppingList.Id },
                 shoppingList);
         }
         catch (ServiceNotFoundException ex)
@@ -84,11 +91,11 @@ public class ShoppingListsController(IShoppingListService service) : BaseControl
     [HttpPut("{listId:int}")]
     public ActionResult<ShoppingListDto> Rename(
         int listId,
-        int userId,
         UpdateShoppingListDto shoppingListDto)
     {
         try
         {
+            var userId = currentUser.GetById();
             return Ok(service.Rename(listId, shoppingListDto, userId));
         }
         catch (ServiceNotFoundException ex)
@@ -106,10 +113,11 @@ public class ShoppingListsController(IShoppingListService service) : BaseControl
     }
 
     [HttpDelete("{listId:int}")]
-    public IActionResult Archive(int listId, int userId)
+    public IActionResult Archive(int listId)
     {
         try
         {
+            var userId = currentUser.GetById();
             service.Archive(listId, userId);
             return NoContent();
         }

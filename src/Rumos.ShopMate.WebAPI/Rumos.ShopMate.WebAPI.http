@@ -1,5 +1,5 @@
-@host = http://localhost:5297
-@userId = 1
+@host = https://localhost:7027
+@token = PASTE_ACCESS_TOKEN_HERE
 @listId = 1
 @itemId = 1
 @memberUserId = 2
@@ -25,30 +25,44 @@ Content-Type: application/json
 
 ### Suggest username
 GET {{host}}/api/users/suggest-username?fullName=Angular%20Student
+Authorization: Bearer {{token}}
 
 ### Find user
 GET {{host}}/api/users/angularstudent
+Authorization: Bearer {{token}}
 
 ### Search products
 GET {{host}}/api/products?searchText=milk
+Authorization: Bearer {{token}}
+
+### Current authenticated user
+GET {{host}}/api/auth/me
+Authorization: Bearer {{token}}
+
+### Admin-only check (a User token receives 403)
+GET {{host}}/api/auth/admin-check
+Authorization: Bearer {{token}}
 
 ### Get active shopping lists
-GET {{host}}/api/shopping-lists?userId={{userId}}
+GET {{host}}/api/shopping-lists
+Authorization: Bearer {{token}}
 
 ### Get one shopping list
-GET {{host}}/api/shopping-lists/{{listId}}?userId={{userId}}
+GET {{host}}/api/shopping-lists/{{listId}}
+Authorization: Bearer {{token}}
 
 ### Create shopping list
 POST {{host}}/api/shopping-lists
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "name": "Angular course groceries",
-  "ownerId": {{userId}}
+  "name": "Angular course groceries"
 }
 
 ### Rename shopping list
-PUT {{host}}/api/shopping-lists/{{listId}}?userId={{userId}}
+PUT {{host}}/api/shopping-lists/{{listId}}
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -56,7 +70,8 @@ Content-Type: application/json
 }
 
 ### Add item
-POST {{host}}/api/shopping-lists/{{listId}}/items?userId={{userId}}
+POST {{host}}/api/shopping-lists/{{listId}}/items
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -66,7 +81,8 @@ Content-Type: application/json
 }
 
 ### Replace item state
-PUT {{host}}/api/shopping-lists/{{listId}}/items/{{itemId}}?userId={{userId}}
+PUT {{host}}/api/shopping-lists/{{listId}}/items/{{itemId}}
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -77,10 +93,12 @@ Content-Type: application/json
 }
 
 ### Remove item
-DELETE {{host}}/api/shopping-lists/{{listId}}/items/{{itemId}}?userId={{userId}}
+DELETE {{host}}/api/shopping-lists/{{listId}}/items/{{itemId}}
+Authorization: Bearer {{token}}
 
 ### Share shopping list
-POST {{host}}/api/shopping-lists/{{listId}}/members?userId={{userId}}
+POST {{host}}/api/shopping-lists/{{listId}}/members
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -89,7 +107,8 @@ Content-Type: application/json
 }
 
 ### Change member role
-PUT {{host}}/api/shopping-lists/{{listId}}/members/{{memberUserId}}?userId={{userId}}
+PUT {{host}}/api/shopping-lists/{{listId}}/members/{{memberUserId}}
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -97,7 +116,9 @@ Content-Type: application/json
 }
 
 ### Remove member
-DELETE {{host}}/api/shopping-lists/{{listId}}/members/{{memberUserId}}?userId={{userId}}
+DELETE {{host}}/api/shopping-lists/{{listId}}/members/{{memberUserId}}
+Authorization: Bearer {{token}}
 
 ### Archive shopping list
-DELETE {{host}}/api/shopping-lists/{{listId}}?userId={{userId}}
+DELETE {{host}}/api/shopping-lists/{{listId}}
+Authorization: Bearer {{token}}

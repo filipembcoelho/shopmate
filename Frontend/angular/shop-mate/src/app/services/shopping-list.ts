@@ -2,13 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { computed, inject, Service, signal } from '@angular/core';
 import { ShoppingListApiDto, ShoppingListData } from '../Model/ShoppingListData';
 import { ShoppingListItem, ShoppingListItemApiDto } from '../Model/ShoppingListItem';
-import { map, Observable } from 'rxjs';
+import { map, Observable, Subject, takeUntil } from 'rxjs';
+import { API_BASE_URL } from './api-config';
 
 @Service()
 export class ShoppingListService {
-  private readonly url = 'https://localhost:7027/api/shopping-lists';
+  private readonly url = `${API_BASE_URL}/shopping-lists`;
 
   private readonly http = inject(HttpClient);
+  private readonly sessionEnded = new Subject<void>();
 
   readonly currentLists = signal<ShoppingListData[]>([]);
   readonly hasLoaded = signal(false);
@@ -18,8 +20,6 @@ export class ShoppingListService {
   readonly isUpdatingItem = signal(false);
   readonly errorMessage = signal('');
   readonly successMessage = signal('');
-
-  private readonly demoUserId = 2;
 
   readonly remainingCount = computed(() =>
     this.currentLists().reduce(
@@ -31,9 +31,7 @@ export class ShoppingListService {
   getLists(): void {
     this.errorMessage.set('');
 
-    const url = `${this.url}?userId=${this.demoUserId}`;
-
-    this.http.get<ShoppingListApiDto[]>(url).subscribe({
+    this.http.get<ShoppingListApiDto[]>(this.url).pipe(takeUntil(this.sessionEnded)).subscribe({
       next: (lists) => {
         const convertedLists: ShoppingListData[] = [];
 
@@ -52,9 +50,12 @@ export class ShoppingListService {
   }
 
   getList(listId: string): Observable<ShoppingListData> {
-    const url = `${this.url}/${listId}?userId=${this.demoUserId}`;
+    const url = `${this.url}/${listId}`;
 
-    return this.http.get<ShoppingListApiDto>(url).pipe(map((list) => this.fromApi(list)));
+    return this.http.get<ShoppingListApiDto>(url).pipe(
+      takeUntil(this.sessionEnded),
+      map((list) => this.fromApi(list)),
+    );
   }
 
   togglePurchased(event: { listId: string; itemId: number }): void {
@@ -71,7 +72,7 @@ export class ShoppingListService {
     this.clearFeedback();
     this.isUpdatingItem.set(true);
 
-    const url = `${this.url}/${event.listId}/items/${event.itemId}?userId=${this.demoUserId}`;
+    const url = `${this.url}/${event.listId}/items/${event.itemId}`;
 
     this.http
       .put<ShoppingListItemApiDto>(url, {
@@ -80,6 +81,7 @@ export class ShoppingListService {
         unit: item.unit,
         isCompleted: !item.purchased,
       })
+      .pipe(takeUntil(this.sessionEnded))
       .subscribe({
         next: (updatedItem) => {
           this.currentLists.update((lists) => {
@@ -115,8 +117,8 @@ export class ShoppingListService {
     this.http
       .post<ShoppingListApiDto>(this.url, {
         name: title.trim(),
-        ownerId: this.demoUserId,
       })
+      .pipe(takeUntil(this.sessionEnded))
       .subscribe({
         next: () => {
           this.isCreating.set(false);
@@ -136,12 +138,13 @@ export class ShoppingListService {
     this.clearFeedback();
     this.isRenaming.set(true);
 
-    const url = `${this.url}/${listId}?userId=${this.demoUserId}`;
+    const url = `${this.url}/${listId}`;
 
     this.http
       .put<ShoppingListApiDto>(url, {
         name: newTitle.trim(),
       })
+      .pipe(takeUntil(this.sessionEnded))
       .subscribe({
         next: () => {
           this.isRenaming.set(false);
@@ -165,9 +168,9 @@ export class ShoppingListService {
 
     this.clearFeedback();
 
-    const url = `${this.url}/${listId}?userId=${this.demoUserId}`;
+    const url = `${this.url}/${listId}`;
 
-    this.http.delete<void>(url).subscribe({
+    this.http.delete<void>(url).pipe(takeUntil(this.sessionEnded)).subscribe({
       next: () => {
         this.successMessage.set('Shopping list archived.');
         this.getLists();
@@ -185,7 +188,7 @@ export class ShoppingListService {
     this.clearFeedback();
     this.isAddingItem.set(true);
 
-    const url = `${this.url}/${listId}/items?userId=${this.demoUserId}`;
+    const url = `${this.url}/${listId}/items`;
 
     this.http
       .post<ShoppingListItemApiDto>(url, {
@@ -193,6 +196,7 @@ export class ShoppingListService {
         quantity,
         unit,
       })
+      .pipe(takeUntil(this.sessionEnded))
       .subscribe({
         next: () => {
           this.isAddingItem.set(false);
@@ -206,6 +210,17 @@ export class ShoppingListService {
           this.errorMessage.set('Could not add the item. Please try again.');
         },
       });
+  }
+
+  reset(): void {
+    this.sessionEnded.next();
+    this.currentLists.set([]);
+    this.hasLoaded.set(false);
+    this.isCreating.set(false);
+    this.isRenaming.set(false);
+    this.isAddingItem.set(false);
+    this.isUpdatingItem.set(false);
+    this.clearFeedback();
   }
 
   private clearFeedback(): void {

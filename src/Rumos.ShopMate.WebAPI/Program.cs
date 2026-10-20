@@ -19,15 +19,22 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 var keyText = builder.Configuration["JwtSettings:Key"] ?? throw new ArgumentException("Missing configuration key");
 var keyBytes = Convert.FromBase64String(keyText);
 
-if (keyBytes.Length <= 32)
+if (keyBytes.Length < 32)
 {
     throw new InvalidOperationException("The JWT key needs to be at least 32 random bytes");
+}
+if (string.IsNullOrWhiteSpace(builder.Configuration["JwtSettings:Issuer"]) ||
+    string.IsNullOrWhiteSpace(builder.Configuration["JwtSettings:Audience"]) ||
+    builder.Configuration.GetValue<int>("JwtSettings:ExpirationInMinutes") <= 0)
+{
+    throw new InvalidOperationException("Complete the JwtSettings configuration");
 }
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        options.MapInboundClaims = false;
         options.TokenValidationParameters = new TokenValidationParameters()
         {
             ValidateIssuerSigningKey = true,
@@ -43,8 +50,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             NameClaimType = "name",
             RoleClaimType = "role"
         };
-        
-        // TODO: Hook
+
+        options.Events = new JwtBearerEvents()
+        {
+            OnTokenValidated = context =>
+            {
+                var subject = context.Principal?.FindFirst("sub")?.Value;
+
+                if (!int.TryParse(subject, out var id) || id <= 0)
+                {
+                    context.Fail("A valid user ID is required");
+                }
+
+                return Task.CompletedTask;
+            }
+        };
     });
 builder.Services.AddAuthorization();
 
@@ -68,9 +88,6 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-
-// JWT authentication
-// Cookie authentication
 
 app.UseHttpsRedirection();
 app.UseRouting();

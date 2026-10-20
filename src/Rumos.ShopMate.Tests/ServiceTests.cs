@@ -188,7 +188,7 @@ public static class ServiceTests
         using var context = CreateContext();
         context.Users.Add(new User("Existing User", "jdoe", "Testing1!"));
         context.SaveChanges();
-        var service = new UserService(context, new PasswordService());
+        var service = new UserService(context);
 
         var result = service.SuggestUsername("John Doe");
 
@@ -198,7 +198,7 @@ public static class ServiceTests
     private static void SuggestUsernameValidatesFullName()
     {
         using var context = CreateContext();
-        var service = new UserService(context, new PasswordService());
+        var service = new UserService(context);
 
         AssertServiceException(
             () => service.SuggestUsername(" "),
@@ -211,7 +211,7 @@ public static class ServiceTests
         var user = new User("Test User", "testuser", "Testing1!");
         context.Users.Add(user);
         context.SaveChanges();
-        var service = new UserService(context, new PasswordService());
+        var service = new UserService(context);
 
         var userDto = service.GetByUsername(" TESTUSER ");
         AssertEqual(user.Id, userDto.Id, "The lookup should return the persisted user ID.");
@@ -222,7 +222,7 @@ public static class ServiceTests
     private static void GetByUsernameRejectsAnUnknownUser()
     {
         using var context = CreateContext();
-        var service = new UserService(context, new PasswordService());
+        var service = new UserService(context);
 
         AssertServiceNotFoundException(
             () => service.GetByUsername("missing"),

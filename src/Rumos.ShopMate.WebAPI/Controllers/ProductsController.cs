@@ -9,7 +9,6 @@ namespace Rumos.ShopMate.WebAPI.Controllers;
 public class ProductsController(IProductCatalogService service) : BaseController
 {
     // TODO: Move repeated exception handling to middleware
-    // when exception middleware is introduced.
     [HttpGet]
     public ActionResult<IReadOnlyList<ProductDto>> Search(string searchText)
     {

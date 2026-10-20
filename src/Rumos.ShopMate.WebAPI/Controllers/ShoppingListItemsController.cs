@@ -7,20 +7,19 @@ using Rumos.ShopMate.Services.Interfaces;
 namespace Rumos.ShopMate.WebAPI.Controllers;
 
 [Route("api/shopping-lists/{listId:int}/items")]
-public class ShoppingListItemsController(IShoppingListService service) : BaseController
+public class ShoppingListItemsController(IShoppingListService service, IUserResolverService currentUser)
+    : BaseController
 {
     // TODO: Move repeated exception handling to middleware
     // when exception middleware is introduced.
-    // TODO: Read the current user ID from the authenticated identity
-    // after JWT authentication is introduced.
     [HttpPost]
     public ActionResult<ShoppingListItemDto> Create(
         int listId,
-        int userId,
         CreateShoppingListItemDto itemDto)
     {
         try
         {
+            var userId = currentUser.GetById();
             var item = service.AddItem(
                 listId,
                 itemDto.Name,
@@ -30,7 +29,7 @@ public class ShoppingListItemsController(IShoppingListService service) : BaseCon
 
             return CreatedAtRoute(
                 "GetShoppingListById",
-                new { listId, userId },
+                new { listId },
                 item);
         }
         catch (ServiceNotFoundException ex)
@@ -51,11 +50,11 @@ public class ShoppingListItemsController(IShoppingListService service) : BaseCon
     public ActionResult<ShoppingListItemDto> Update(
         int listId,
         int itemId,
-        int userId,
         UpdateShoppingListItemDto itemDto)
     {
         try
         {
+            var userId = currentUser.GetById();
             return Ok(service.UpdateItem(listId, itemId, itemDto, userId));
         }
         catch (ServiceNotFoundException ex)
@@ -73,10 +72,11 @@ public class ShoppingListItemsController(IShoppingListService service) : BaseCon
     }
 
     [HttpDelete("{itemId:int}")]
-    public IActionResult Remove(int listId, int itemId, int userId)
+    public IActionResult Remove(int listId, int itemId)
     {
         try
         {
+            var userId = currentUser.GetById();
             service.RemoveItem(listId, itemId, userId);
             return NoContent();
         }

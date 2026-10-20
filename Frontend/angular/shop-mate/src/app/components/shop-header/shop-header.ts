@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { ShoppingListService } from '../../services/shopping-list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../services/auth';
 
 @Component({
   imports: [RouterLink, RouterLinkActive],
@@ -9,4 +10,5 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class ShopHeader {
   readonly shoppingListService = inject(ShoppingListService);
+  readonly auth = inject(AuthService);
 }
